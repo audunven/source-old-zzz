@@ -247,10 +247,6 @@ public class DefinitionEquivalenceMatcher extends ObjectAlignment implements Ali
 
 							cosineSim = utilities.Cosine.cosineSimilarity(sourceVectors, targetVectors);
 							
-							//calculate the final confidence using a sigmoid function
-//							addAlignCell("DefinitionEquivalenceMatcher" +idCounter, sourceObject, targetObject, "=", 
-//									Sigmoid.weightedSigmoid(slope, cosineSim, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
-							
 							addAlignCell("DefinitionEquivalenceMatcher" + idCounter + "_" + profileScore + "_", sourceObject, targetObject, "=", cosineSim * profileScore);
 							
 						} else {

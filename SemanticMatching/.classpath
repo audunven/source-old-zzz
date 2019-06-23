@@ -43,21 +43,21 @@
 	<classpathentry kind="lib" path="lib/ws4j-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/ontosim.jar"/>
 	<classpathentry kind="lib" path="lib/PropString.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/alcomo.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-cli.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-core.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-datatypes.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-dig.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-el.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-explanation.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-jena.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-modularity.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-owlapiv3.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-pellint.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-query.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/pellet-rules.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/jgrapht-jdk1.5.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="/Users/audunvennesland/eclipse-workspace/Evaluation_Matchers/lib/stanford-postagger.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/alcomo.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-cli.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-core.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-datatypes.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-dig.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-el.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-explanation.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-jena.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-modularity.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-owlapiv3.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-pellint.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-query.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/pellet-rules.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/jgrapht-jdk1.5.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/Users/audunvennesland/git/SemanticMatching/SemanticMatching/lib/stanford-postagger.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

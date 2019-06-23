@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -187,6 +188,8 @@ public class StringUtilities {
 		return strings;
 	}
 	
+	
+	
 	/**
 	 * Takes a string as input and returns set of lemmatized tokens from this string
 	 * @param s: the input string to tokenize and lemmatize
@@ -247,7 +250,115 @@ public class StringUtilities {
 		return lemmatizedStrings;
 	}
 
+	/**
+	 * Takes a string as input and returns list of tokens from this string
+	 * @param s: the input string to tokenize
+	 * @param lowercase: if the output tokens should be lowercased
+	 * @return a set of tokens
+	 * @throws IOException 
+	 */
+	public static List<String> tokenizeToList(String s, boolean lowercase) throws IOException {
+		if (s == null) {
+			return null;
+		}
+		
+		//remove stopwords
+		String stringWOStopWords = removeStopWords(s);
+
+		List strings = new LinkedList<>();
+
+		String current = "";
+		Character prevC = 'x';
+
+		for (Character c: stringWOStopWords.toCharArray()) {
+
+			if ((Character.isLowerCase(prevC) && Character.isUpperCase(c)) || 
+					c == '_' || c == '-' || c == ' ' || c == '/' || c == '\\' || c == '>') {
+
+				current = current.trim();
+
+				if (current.length() > 0) {
+					if (lowercase) 
+						strings.add(current.toLowerCase());
+					else
+						strings.add(current);
+				}
+
+				current = "";
+			}
+
+			if (c != '_' && c != '-' && c != '/' && c != '\\' && c != '>') {
+				current += c;
+				prevC = c;
+			}
+		}
+
+		current = current.trim();
+
+		if (current.length() > 0) {
+			if (!(current.length() > 4 && Character.isDigit(current.charAt(0)) && 
+					Character.isDigit(current.charAt(current.length()-1)))) {
+				strings.add(current.toLowerCase());
+			}
+		}
+
+		return strings;
+	}
 	
+	/**
+	 * Takes a string as input and returns list of tokens from this string
+	 * @param s: the input string to tokenize
+	 * @param lowercase: if the output tokens should be lowercased
+	 * @return a set of tokens
+	 * @throws IOException 
+	 */
+	public static List<String> tokenizeAndLemmatizeToList(String s, boolean lowercase) throws IOException {
+		if (s == null) {
+			return null;
+		}
+		
+		//remove stopwords
+		String stringWOStopWords = removeStopWords(s);
+
+		List<String> strings = new LinkedList<>();
+
+		String current = "";
+		Character prevC = 'x';
+
+		for (Character c: stringWOStopWords.toCharArray()) {
+
+			if ((Character.isLowerCase(prevC) && Character.isUpperCase(c)) || 
+					c == '_' || c == '-' || c == ' ' || c == '/' || c == '\\' || c == '>') {
+
+				current = current.trim();
+
+				if (current.length() > 0) {
+					if (lowercase) 
+						strings.add(getLemma(current).toLowerCase());
+					else
+						strings.add(getLemma(current));
+				}
+
+				current = "";
+			}
+
+			if (c != '_' && c != '-' && c != '/' && c != '\\' && c != '>') {
+				current += c;
+				prevC = c;
+			}
+		}
+
+		current = current.trim();
+
+		if (current.length() > 0) {
+			if (!(current.length() > 4 && Character.isDigit(current.charAt(0)) && 
+					Character.isDigit(current.charAt(current.length()-1)))) {
+				strings.add(getLemma(current.toLowerCase()));
+			}
+		}
+
+		return strings;
+	}
 	
 	/**
 	 * Returns a string of tokens
@@ -777,9 +888,11 @@ public class StringUtilities {
 
 	public static void main(String args[]) throws OWLOntologyCreationException, IOException, JWNLException {
 		
-		String word = "MusicPublisherNumber";
+		String word = "gates";
 		
-		System.out.println("The modifier is " + getCompoundModifier(word));
+		//System.out.println("The modifier is " + getCompoundModifier(word));
+		
+		System.out.println("The lemma is " + getLemma(word));
 //		
 //		
 //		String test = "regularly";

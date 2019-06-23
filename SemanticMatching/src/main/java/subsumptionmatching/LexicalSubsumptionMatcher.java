@@ -237,16 +237,12 @@ public class LexicalSubsumptionMatcher extends ObjectAlignment implements Alignm
 							
 							addAlignCell("LexicalSubsumptionMatcher" +idCounter + "_" + profileScore + "_", source, target, "&lt;", wordNetSimScore * profileScore);
 							
-//							addAlignCell("LexicalSubsumptionMatcher" +idCounter, source, target, "&lt;", 
-//									Sigmoid.weightedSigmoid(slope, wordNetSimScore, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
 						}
 
 						//if the full target is a part of the set of hyponyms of source and source and target are semantically similar (according to Resnik): source > target and score 1.0
 						else if ((hyponymsSource.contains(targetEntity) || hyponymsSource.contains(targetEntityNormalCase)) && wordNetSimScore > 0.75) {
-							addAlignCell("LexicalSubsumptionMatcher" +idCounter + "_" + profileScore + "_", source, target, "&gt;", wordNetSimScore * profileScore);
-//							
-//							addAlignCell("LexicalSubsumptionMatcher" +idCounter, source, target, "&gt;", 
-//									Sigmoid.weightedSigmoid(slope, wordNetSimScore, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
+							addAlignCell("LexicalSubsumptionMatcher" +idCounter + "_" + profileScore + "_", source, target, "&gt;", wordNetSimScore * profileScore);							
+
 						}
 
 

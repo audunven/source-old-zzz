@@ -182,23 +182,15 @@ public class CompoundMatcher extends ObjectAlignment implements AlignmentProcess
 						if (numModifiers == 1) {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&lt;", 1.0 * profileScore); 
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&lt;", 
-//									Sigmoid.weightedSigmoid(slope, 1.0, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						} else if (numModifiers == 2) {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&lt;", 0.75 * profileScore); 
 							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&lt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.75, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
 						} else {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&lt;", 0.50 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&lt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.5, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						}
 					}
 
@@ -211,25 +203,16 @@ public class CompoundMatcher extends ObjectAlignment implements AlignmentProcess
 							
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&gt;", 1.0 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&gt;", 
-//									Sigmoid.weightedSigmoid(slope, 1.0, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						} else if (numModifiers == 2) {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&gt;", 0.75 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&gt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.75, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						} else {
 							
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&gt;", 0.50 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							 addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&gt;", 
-//							Sigmoid.weightedSigmoid(slope, 0.50, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						}
 
 					}
@@ -242,24 +225,15 @@ public class CompoundMatcher extends ObjectAlignment implements AlignmentProcess
 						if (numModifiers == 1) {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&lt;", 1.0 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&lt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.75, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						} else if (numModifiers == 2) {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&lt;", 0.5 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&lt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.5, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
+
 						} else {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&lt;", 0.25 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&lt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.25, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+	
 						}
 					}
 
@@ -271,24 +245,17 @@ public class CompoundMatcher extends ObjectAlignment implements AlignmentProcess
 						if (numModifiers == 1) {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&gt;", 0.75 * profileScore);
-							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&gt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.75, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						} else if (numModifiers == 2) {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&gt;", 0.50 * profileScore);
 							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&gt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.5, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax))); 
+
 						} else {
 							//basic weighting using profile score
 							addAlignCell("CompoundMatcher" +idCounter + "_" + profileScore + "_", sourceObject,targetObject, "&gt;", 0.25 * profileScore);
 							
-							//using sigmoid function to compute confidence
-//							addAlignCell("CompoundMatcher" +idCounter, sourceObject,targetObject, "&gt;", 
-//									Sigmoid.weightedSigmoid(slope, 0.25, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));  
+
 						}
 
 					}
@@ -302,8 +269,6 @@ public class CompoundMatcher extends ObjectAlignment implements AlignmentProcess
 
 		} catch (Exception e) { e.printStackTrace(); }
 
-		//long endTime = System.currentTimeMillis();
-		//System.out.println("Compound Matcher completed in " + (endTime - startTime) / 1000 + " seconds.");
 	}
 
 	

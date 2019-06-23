@@ -302,6 +302,71 @@ public class WNDomain {
 		
 		return synsetSet;
 	}
+	
+	/**
+	 * Retrieves a set of domain descriptions (from WNDomains) using a string representation of a word as parameter. In this method "composite" domains (e.g. administration-politics) are split into individual tokens (e.g. administration AND polities).
+	 * @param inputWord String representation of the word (synset)
+	 * @return a set of strings representing domains associated with the input parameter
+	 * @throws FileNotFoundException
+	 * @throws JWNLException
+	 */
+	public static Set<String> getDomainTokensFromString (String inputWord) throws FileNotFoundException, JWNLException {
+		
+		List<Long> synsetOffsets = null;
+		Set<String> synsetList = new HashSet<String>();
+		StringBuffer sb = new StringBuffer();
+		
+		//get the synset offset if the word is represented in WordNet
+		if (WordNet.containedInWordNet(inputWord)) {
+			synsetOffsets = findSynsetOffset(inputWord);
+			synsetList = convertOffsetToString(synsetOffsets);
+		}
+		
+		//remove duplicates and "factotum"
+		Set<String> synsetSet = new HashSet<String>();
+		
+		
+		for (String s : synsetList) {
+			
+			if (!s.equals("factotum")) {
+				
+				String[] array = s.split(" ");
+				for (String string : array) {
+				
+					synsetSet.add(string);
+				}
+			}
+		}
+		
+		
+		
+		return synsetSet;
+	}
+	
+	public static boolean conceptsFromSameDomain(String s1, String s2) throws FileNotFoundException, JWNLException {
+				
+		Set<String> concept1Tokens = StringUtilities.getWordsAsSetFromCompound(s1);
+		Set<String> concept2Tokens = StringUtilities.getWordsAsSetFromCompound(s2);
+		
+		Set<String> concept1Domains = new HashSet<String>();
+		Set<String> concept2Domains = new HashSet<String>();
+		
+		for (String s : concept1Tokens) {
+			concept1Domains.addAll(getDomainTokensFromString(s));
+		}
+		
+		for (String s : concept2Tokens) {
+			concept2Domains.addAll(getDomainTokensFromString(s));
+		}
+		
+		if (sameDomain(concept1Domains, concept2Domains)) {
+			return true;
+		} else {
+			return false;
+		}
+		
+		
+	}
 
 
 	/**
@@ -313,13 +378,21 @@ public class WNDomain {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, JWNLException, OWLOntologyCreationException{
 		WNDomain fileSearch = new WNDomain();
+		
+		//<https://data.nasa.gov/ontologies/atmonto/ATM#AirportInfrastructureComponent> > <http://www.project-best.eu/owl/airm-mono/airm.owl#Terminal>0.6565596258223504
+		
+		String concept1 = "AirportInfrastructureComponent";
+		String concept2 = "Terminal";
+		
+		System.out.println("Concepts from same domain?: " + WNDomain.conceptsFromSameDomain(concept1, concept2));
+		
 
-		       	String s1 = "content";
-		       	String s2 = "continent";
+		       	String s1 = "airport";
+		       	String s2 = "terminal";
 
 		double minJaccard = 0.5;
 		
-		Set<String> synsetSetS1= getDomainsFromString(s1);
+		Set<String> synsetSetS1= getDomainTokensFromString(s1);
 		
 		System.err.println("Domains associated with " + s1);
 		
@@ -327,7 +400,7 @@ public class WNDomain {
 			System.err.println(word);
 		}
 		
-		Set<String> synsetSetS2= getDomainsFromString(s2);
+		Set<String> synsetSetS2= getDomainTokensFromString(s2);
 
 		System.out.println("--- Offset(s) for " + s1 + " ---");
 		for (String s1Offset : synsetSetS1) {
@@ -343,18 +416,32 @@ public class WNDomain {
 		
 		System.out.println("\nFrom the same domain (jaccard 0.5) " + sameDomainJaccard(s1, s2, minJaccard ));
 		
-		List<Long> s1List = findSynsetOffset(s1);
-		System.out.println("Offsets for " + s1 + ": ");
 		
-		for (Long l : s1List) {
-			System.out.println(l);
-		}
+		//<https://data.nasa.gov/ontologies/atmonto/ATM#AirportInfrastructureComponent> > <http://www.project-best.eu/owl/airm-mono/airm.owl#Terminal>0.6565596258223504
 		
-		List<Long> s2List = findSynsetOffset(s2);
-		System.out.println("Offsets for " + s2 + ": ");
-		for (Long l : s2List) {
-			System.out.println(l);
-		}
+		Set<String> set1 = new HashSet<String>();
+		set1.add("airport");
+//		set1.add("infrastructure");
+//		set1.add("component");
+		
+		Set<String> set2 = new HashSet<String>();
+		set2.add("terminal");
+		
+		System.out.println("\nFrom the same domain?: " + sameDomain(set1, set2));
+				
+		
+//		List<Long> s1List = findSynsetOffset(s1);
+//		System.out.println("Offsets for " + s1 + ": ");
+//		
+//		for (Long l : s1List) {
+//			System.out.println(l);
+//		}
+//		
+//		List<Long> s2List = findSynsetOffset(s2);
+//		System.out.println("Offsets for " + s2 + ": ");
+//		for (Long l : s2List) {
+//			System.out.println(l);
+//		}
 		
 
 		/*       	

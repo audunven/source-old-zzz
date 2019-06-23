@@ -14,12 +14,14 @@
 		<type>11</type>
 		<onto1>
 			<Ontology rdf:about="https://data.nasa.gov/ontologies/atmonto/ATM">
-				<location>/Users/audunvennesland/git/Compose/compose/files/ESWC_ATMONTO_AIRM/ATMOntoCoreMerged.owl#</location>
+				<!--<location>/Users/audunvennesland/git/Compose/compose/files/ESWC_ATMONTO_AIRM/ATMOntoCoreMerged.owl#</location>-->
+			  <location>https://data.nasa.gov/ontologies/atmonto/ATM</location>
 			</Ontology>
 		</onto1>
 		<onto2>
-			<Ontology rdf:about="http://www.project-best.eu/owl/airm-mono/airm.owl">
-				<location>/Users/audunvennesland/git/Compose/compose/files/ESWC_ATMONTO_AIRM/airm-mono.owl</location>
+		  <Ontology rdf:about="https://raw.githubusercontent.com/airm-o/airm-o/master/airm-o.owl">
+				<!--<location>/Users/audunvennesland/git/Compose/compose/files/ESWC_ATMONTO_AIRM/airm-mono.owl</location>-->
+		    <location>https://raw.githubusercontent.com/airm-o/airm-o/master/airm-o.owl</location>
 			</Ontology>
 		</onto2>
 		<!--EQUIVALENCE RELATIONS-->
@@ -87,7 +89,7 @@
 			</Cell>
 		</map> <map>
 			<Cell>
-				<entity1 rdf:resource="hhttps://data.nasa.gov/ontologies/atmonto/ATM#Gate"/>
+				<entity1 rdf:resource="https://data.nasa.gov/ontologies/atmonto/ATM#Gate"/>
 				<entity2 rdf:resource="http://www.project-best.eu/owl/airm-mono/airm.owl#Gate"/>
 				<measure rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</measure>
 				<relation>=</relation>

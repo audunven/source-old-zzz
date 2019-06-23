@@ -43,27 +43,22 @@ public class OntologyProfiler {
 	public static void main(String[] args) throws OWLOntologyCreationException, URISyntaxException, OntowrapException,
 	FileNotFoundException, JWNLException, IOException {
 
+//				String onto1Path = "./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl";
+//				String onto2Path = "./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl";
+//				String corpus = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_embeddings.txt";
 
-
-		// create a scanner so we can read the command-line input
-		Scanner scanner = new Scanner(System.in);
+//		String onto1Path = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/bibframe.rdf";
+//		String onto2Path = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/schema-org.owl";
+//		String corpus = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_embeddings.txt";
+		
+		String onto1Path = "./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301304/301304-301.rdf";
+		String onto2Path = "./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301304/301304-304.rdf";
+		String corpus = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_embeddings.txt";
 
 		System.out.println("Starting the Ontology Profiler");
 
-		System.out.print("\nEnter path to ontology 1: ");
-
-		String onto1Path = scanner.next();
-
-		System.out.print("Enter path to ontology 2: ");
-
-		String onto2Path = scanner.next();
-
 		File onto1 = new File(onto1Path);
 		File onto2 = new File(onto2Path);
-
-		System.out.print("Enter path word embedding corpus: ");
-
-		String corpus = scanner.next();
 
 		File storedOntologyProfileFile = new File("./files/_PHD_EVALUATION/ONTOLOGYPROFILES/" 
 				+ StringUtilities.stripOntologyName(onto1.getName()) + "-" 
@@ -99,14 +94,6 @@ public class OntologyProfiler {
 		pw.println("The Definition Coverage (DC) of  " + onto1.getName() + " and " + onto2.getName() + " is: "
 				+ round((computeDefinitionCoverage(onto1, onto2)), 2));
 
-		//		System.out.println("\n*** Definition Token Equality ***");
-		//		System.out.println("The Definition Token Equality of  " + onto1.getName() + " and " + onto2.getName() + " is: "
-		//				+ round((computeDefinitionTokenEquality(onto1, onto2)), 2));
-		//
-		//		pw.println("\n*** Definition Token Equality ***");
-		//		pw.println("The Definition Token Equality of  " + onto1.getName() + " and " + onto2.getName() + " is: "
-		//				+ round((computeDefinitionTokenEquality(onto1, onto2)), 2));
-
 		System.out.println("\n*** Property Fraction ***");
 		System.out.println("The Property Fraction (PF) of  " + onto1.getName() + " and " + onto2.getName() + " is: "
 				+ round((computePropertyFraction(onto1, onto2)), 2));
@@ -123,13 +110,6 @@ public class OntologyProfiler {
 		pw.println("The Structural Profile (SP) of " + onto1.getName() + " and " + onto2.getName() + " is: " + 
 				round((computeStructuralProfile(onto1, onto2)), 2));
 
-		//		System.out.println("\n*** Structural Affinity ***");
-		//		System.out.println("The Structural Affinity (SA) of " + onto1.getName() + " and " + onto2.getName() + " is: " + 
-		//				round((Graph.computeStructuralAffinity(onto1, onto2, affinityThreshold)), 2));
-		//
-		//		pw.println("\n*** Structural Affinity ***");
-		//		pw.println("The Structural Affinity (SA) of " + onto1.getName() + " and " + onto2.getName() + " is: " + 
-		//				round((Graph.computeStructuralAffinity(onto1, onto2, affinityThreshold)), 2));
 
 		System.out.println("\n*** Lexical Coverage (WordNet) ***");
 		System.out.println("The Lexical Coverage (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
@@ -139,36 +119,23 @@ public class OntologyProfiler {
 		pw.println("The Lexical Coverage (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
 				+ round((computeLexicalCoverage(onto1, onto2)), 2));
 
-		//		System.out.println("\n*** Lexical Coverage (BabelNet) ***");
-		//		System.out.println("The Lexical Coverage (BabelNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
-		//				+ round((computeBabelNetCoverageComp(onto1, onto2)), 2));
 
-				System.out.println("\n*** Synonym Richness (WordNet) ***");
-				System.out.println("The Synonym Richness (SR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
-						+ round((computeSynonymRichnessWordNet(onto1, onto2)), 2));
-		//
-				pw.println("\n*** Synonym Richness (WordNet) ***");
-				pw.println("The Synonym Richness (SR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
-						+ round((computeSynonymRichnessWordNet(onto1, onto2)), 2));
-		//
-				System.out.println("\n*** Hyponym Richness (WordNet) ***");
-				System.out.println("The Hyponym Richness (HR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
-						+ round((computeHyponymRichnessWordNet(onto1, onto2)), 2));
-		//
-				pw.println("\n*** Hyponym Richness (WordNet) ***");
-				pw.println("The Hyponym Richness (HR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
-						+ round((computeHyponymRichnessWordNet(onto1, onto2)), 2));
+		System.out.println("\n*** Synonym Richness (WordNet) ***");
+		System.out.println("The Synonym Richness (SR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
+				+ round((computeSynonymRichnessWordNet(onto1, onto2)), 2));
 
+		pw.println("\n*** Synonym Richness (WordNet) ***");
+		pw.println("The Synonym Richness (SR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
+				+ round((computeSynonymRichnessWordNet(onto1, onto2)), 2));
 
-		//		System.out.println("\n*** Hyponym Richness (BabelNet) ***");
-		//		System.out.println("The Hyponym Richness (HR) (BabelNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
-		//				+ round((computeHyponymRichnessBabelNet(onto1, onto2)), 2));
-		//		
-		//
-		//		
-		//		System.out.println("\n*** Synonym Richness (BabelNet) ***");
-		//		System.out.println("The Synonym Richness (SR) (BabelNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
-		//				+ round((computeSynonymRichnessBabelNet(onto1, onto2)), 2));
+		System.out.println("\n*** Hyponym Richness (WordNet) ***");
+		System.out.println("The Hyponym Richness (HR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
+				+ round((computeHyponymRichnessWordNet(onto1, onto2)), 2));
+
+		pw.println("\n*** Hyponym Richness (WordNet) ***");
+		pw.println("The Hyponym Richness (HR) (WordNet) of " + onto1.getName() + " and " + onto2.getName() + " is: "
+				+ round((computeHyponymRichnessWordNet(onto1, onto2)), 2));
+
 
 		pw.close();
 
@@ -178,10 +145,10 @@ public class OntologyProfiler {
 	public static Map<String, Double> computeOntologyProfileScores(File ontoFile1, File ontoFile2, String corpus) throws OWLOntologyCreationException, JWNLException, IOException {
 
 		Map<String, Double> ontologyProfileScores = new HashMap<String, Double>();
+		
 		ontologyProfileScores.put("cf", computeCompoundFraction(ontoFile1, ontoFile2));
 		ontologyProfileScores.put("cc", computeCorpusCoverage(ontoFile1, ontoFile2, corpus));
 		ontologyProfileScores.put("dc", computeDefinitionCoverage(ontoFile1, ontoFile2));
-		//		ontologyProfileScores.put("dte", computeDefinitionTokenEquality(ontoFile1, ontoFile2));
 		ontologyProfileScores.put("pf", computePropertyFraction(ontoFile1, ontoFile2));
 		ontologyProfileScores.put("sp", computeStructuralProfile(ontoFile1, ontoFile2));
 		ontologyProfileScores.put("lc", computeLexicalCoverage(ontoFile1, ontoFile2));
@@ -325,10 +292,13 @@ public class OntologyProfiler {
 			String def = OntologyOperations.getClassDefinition(onto1, cl);
 
 			if (def != null) {
+				
+				String def_without_stopwords = StringUtilities.removeStopWords(def);
+				
+				String[] tokens = def_without_stopwords.split(" ");
+				
 
-				String[] tokens = def.split(" ");
-
-				if (tokens.length > 3) {
+				if (tokens.length > 10) {
 					counterOnto1++;
 				}
 
@@ -342,10 +312,12 @@ public class OntologyProfiler {
 			String def = OntologyOperations.getClassDefinition(onto2, cl);
 
 			if (def != null) {
+				
+				String def_without_stopwords = StringUtilities.removeStopWords(def);
 
-				String[] tokens = def.split(" ");
+				String[] tokens = def_without_stopwords.split(" ");
 
-				if (tokens.length > 3) {
+				if (tokens.length > 10) {
 					counterOnto2++;
 				}
 
@@ -464,8 +436,6 @@ public class OntologyProfiler {
 	 */
 	public static double computeHyponymRichnessWordNet(File ontoFile1, File ontoFile2) throws OWLOntologyCreationException {
 
-		//RiWordNet database = new RiWordNet("/Users/audunvennesland/Documents/PhD/Development/WordNet/WordNet-3.0/dict");
-
 		double hyponymCounterOnto1 = 0;
 		double hyponymCounterOnto2 = 0;
 
@@ -502,41 +472,7 @@ public class OntologyProfiler {
 		return (hyponymRichnessOnto1 + hyponymRichnessOnto2) / 2;
 	}
 
-	//	public static double computeHyponymRichnessBabelNet(File ontoFile1, File ontoFile2) throws OWLOntologyCreationException {
-	//
-	//		double hyponymCounterOnto1 = 0;
-	//		double hyponymCounterOnto2 = 0;
-	//
-	//		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-	//		OWLOntology onto1 = manager.loadOntologyFromOntologyDocument(ontoFile1);
-	//		OWLOntology onto2 = manager.loadOntologyFromOntologyDocument(ontoFile2);
-	//
-	//		int numClassesTotalOnto1 = onto1.getClassesInSignature().size();
-	//		int numClassesTotalOnto2 = onto2.getClassesInSignature().size();
-	//		
-	//		for (OWLClass cl : onto1.getClassesInSignature()) {
-	//			ArrayList<String> hyponyms = BabelNetOperations.getHyponyms(cl.getIRI().getFragment());
-	//			
-	//			if (hyponyms.size() > 0) {
-	//				hyponymCounterOnto1++;
-	//			}
-	//		}
-	//		
-	//		for (OWLClass cl : onto2.getClassesInSignature()) {
-	//			ArrayList<String> hyponyms = BabelNetOperations.getHyponyms(cl.getIRI().getFragment());
-	//			
-	//			if (hyponyms.size() > 0) {
-	//				hyponymCounterOnto2++;
-	//			}
-	//
-	//		}
-	//
-	//		double hyponymRichnessOnto1 = (double) hyponymCounterOnto1 / (double) numClassesTotalOnto1;
-	//		double hyponymRichnessOnto2 = (double) hyponymCounterOnto2 / (double) numClassesTotalOnto2;
-	//
-	//		return (hyponymRichnessOnto1 + hyponymRichnessOnto2) / 2;
-	//	}
-	//	
+
 	/**
 	 * Returns the average number of synonyms in WordNet for each class in an
 	 * ontology
@@ -584,52 +520,6 @@ public class OntologyProfiler {
 		return (synonymRichnessOnto1 + synonymRichnessOnto2) / 2;
 	}
 
-	/**
-	 * Returns the average number of synonyms in BabelNet for each class in an
-	 * ontology
-	 * 
-	 * @param ontoFile:
-	 *            an ontology file
-	 * @return the average number of synonyms per class in an ontology
-	 * @throws OWLOntologyCreationException
-	 */
-	//	public static double computeSynonymRichnessBabelNet(File ontoFile1, File ontoFile2) throws OWLOntologyCreationException {
-	//
-	//		double synonymCounterOnto1 = 0;
-	//		double synonymCounterOnto2 = 0;
-	//
-	//		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-	//		OWLOntology onto1 = manager.loadOntologyFromOntologyDocument(ontoFile1);
-	//		OWLOntology onto2 = manager.loadOntologyFromOntologyDocument(ontoFile2);
-	//
-	//		int numClassesTotalOnto1 = onto1.getClassesInSignature().size();
-	//		int numClassesTotalOnto2 = onto2.getClassesInSignature().size();
-	//		
-	//		for (OWLClass cl : onto1.getClassesInSignature()) {
-	//			Set<String> synonyms = BabelNetOperations.
-	//					getSynonyms(StringUtilities.stringTokenize(cl.getIRI().getFragment(), true));
-	//			
-	//			if (synonyms.size() > 0) {
-	//				synonymCounterOnto1++;
-	//			}
-	//
-	//		}
-	//		
-	//		for (OWLClass cl : onto2.getClassesInSignature()) {
-	//			Set<String> synonyms = BabelNetOperations.
-	//					getSynonyms(StringUtilities.stringTokenize(cl.getIRI().getFragment(), true));
-	//			
-	//			if (synonyms.size() > 0) {
-	//				synonymCounterOnto2++;
-	//			}
-	//
-	//		}
-	//
-	//		double synonymRichnessOnto1 = (double) synonymCounterOnto1 / (double) numClassesTotalOnto1;
-	//		double synonymRichnessOnto2 = (double) synonymCounterOnto2 / (double) numClassesTotalOnto2;
-	//
-	//		return (synonymRichnessOnto1 + synonymRichnessOnto2) / 2;
-	//	}
 
 	public static double computePropertyFraction(File ontoFile) throws OWLOntologyCreationException {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
@@ -687,10 +577,10 @@ public class OntologyProfiler {
 	public static double computeLexicalCoverage(File ontoFile1, File ontoFile2)
 			throws OWLOntologyCreationException, FileNotFoundException, JWNLException {
 
-		double WC = (OntologyOperations.getWordNetCoverageComp(ontoFile1)
+		double lexicalCoverage = (OntologyOperations.getWordNetCoverageComp(ontoFile1)
 				+ OntologyOperations.getWordNetCoverageComp(ontoFile2)) / 2;
 
-		return WC;
+		return lexicalCoverage;
 	}
 
 

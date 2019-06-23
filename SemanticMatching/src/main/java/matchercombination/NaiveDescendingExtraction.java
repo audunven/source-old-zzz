@@ -55,10 +55,11 @@ public class NaiveDescendingExtraction {
 
 		Iterator<Cell> itr = cellsList.iterator();
 		Set<Cell> removed = new HashSet<Cell>();
-		//int counter = 0;
+		int counter = 0;
 
 		while (itr.hasNext()) {
-			//counter++;
+			//System.out.println("Running NDE on cell " + counter + " of a total of " + cellsList.size() + " cells");
+			counter++;
 			Cell thisCell = itr.next();
 
 			if (!removed.contains(thisCell)) {
@@ -76,7 +77,7 @@ public class NaiveDescendingExtraction {
 			}
 
 		}
-		//counter++;
+		counter++;
 
 		for (Cell c : extractionList) {
 			extractedAlignment.addAlignCell(c.getId(), c.getObject1(), c.getObject2(), c.getRelation().getRelation(), c.getStrength());

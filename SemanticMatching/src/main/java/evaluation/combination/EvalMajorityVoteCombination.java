@@ -8,6 +8,8 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -32,26 +34,42 @@ import utilities.StringUtilities;
 
 public class EvalMajorityVoteCombination {
 
+	//ATMONTO-AIRM || BIBFRAME-SCHEMAORG
+	final static String DATASET = "BIBFRAME-SCHEMAORG";
+
+	static File SOURCE_ONTO = null;
+	static File TARGET_ONTO = null;
+	static String REFERENCE_ALIGNMENT_EQ = null;
+	static String REFERENCE_ALIGNMENT_SUB = null;
+	static String REFERENCE_ALIGNMENT_EQ_AND_SUB = null;
+	static Date date = Calendar.getInstance().getTime();
+
 	public static void main(String[] args) throws AlignmentException, URISyntaxException, OWLOntologyCreationException, JWNLException, IOException {
 
-		//ATMONTO-AIRM || BIBFRAME-SCHEMAORG || OAEI2011
-		String dataset = "BIBFRAME-SCHEMAORG";
+		if (DATASET.equalsIgnoreCase("ATMONTO-AIRM")) {
+			SOURCE_ONTO = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
+			TARGET_ONTO = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
+			REFERENCE_ALIGNMENT_EQ = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQUIVALENCE.rdf";
+			REFERENCE_ALIGNMENT_SUB = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-SUBSUMPTION.rdf";
+			REFERENCE_ALIGNMENT_EQ_AND_SUB = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQ-SUB.rdf";
 
-		//the two ontology files whose alignments are combined
-		File sourceOntologyFile = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/bibframe.rdf");
-		File targetOntologyFile = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/schema-org.owl");
-		String referenceAlignment = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQ-SUB.rdf";
-		
-//		File sourceOntologyFile = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
-//		File targetOntologyFile = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
-//		String referenceAlignment = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQ-SUB.rdf";
-		
+		} else if (DATASET.equalsIgnoreCase("BIBFRAME-SCHEMAORG")) {
+			SOURCE_ONTO = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/bibframe.rdf");
+			TARGET_ONTO = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/schema-org.owl");
+			REFERENCE_ALIGNMENT_EQ = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
+			REFERENCE_ALIGNMENT_SUB = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-SUBSUMPTION.rdf";
+			REFERENCE_ALIGNMENT_EQ_AND_SUB = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQ-SUB.rdf";
+		}
+
 		AlignmentParser aparser = new AlignmentParser(0);
-		URIAlignment refalign = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(referenceAlignment)));
+		URIAlignment refalign_EQ_AND_SUB = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(REFERENCE_ALIGNMENT_EQ_AND_SUB)));
+
+		URIAlignment refalign_EQ = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(REFERENCE_ALIGNMENT_EQ)));
+		URIAlignment refalign_SUB = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(REFERENCE_ALIGNMENT_SUB)));
 
 		//folder holding all individual EQ and SUB alignments at threshold 0.1
-		String EQ_folder = "./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/MAJORITYVOTE/MERGED_NOWEIGHT/EQ";
-		String SUB_folder = "./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/MAJORITYVOTE/MERGED_NOWEIGHT/SUB";
+		String EQ_folder = "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/MAJORITYVOTE/MERGED_NOWEIGHT/EQ";
+		String SUB_folder = "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/MAJORITYVOTE/MERGED_NOWEIGHT/SUB";
 
 		//put all EQ alignments in the EQ_folder into an ArrayList after enforcing 1-1 relations and removing mismatches
 		File folder = new File(EQ_folder);
@@ -73,7 +91,7 @@ public class EvalMajorityVoteCombination {
 			ndaAlignment = NaiveDescendingExtraction.extractOneToOneRelations(thisAlignment);
 
 			//remove mismatches
-			noMIsmatchAlignment = MismatchDetection.removeMismatches(ndaAlignment, sourceOntologyFile, targetOntologyFile);
+			noMIsmatchAlignment = MismatchDetection.removeMismatches(ndaAlignment, SOURCE_ONTO, TARGET_ONTO);
 
 			eqAlignments.add(noMIsmatchAlignment);
 
@@ -91,6 +109,13 @@ public class EvalMajorityVoteCombination {
 
 		}
 
+		double[] confidence = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
+		double precision = 0;
+		double recall = 0;
+		double fMeasure = 0;
+		PRecEvaluator eval = null;
+		Properties p = new Properties();
+
 		URIAlignment majorityVoteEQAlignment = MajorityVote.majorityVote(eqAlignments);
 		URIAlignment majorityVoteSUBAlignment = MajorityVote.majorityVote(subAlignments);
 
@@ -99,26 +124,65 @@ public class EvalMajorityVoteCombination {
 
 		//resolve potential conflicts in the merged EQ and SUB alignment
 		URIAlignment nonConflictedMergedAlignment = AlignmentConflictResolution.resolveAlignmentConflict(mergedEQAndSubAlignment);
-		
+
+		//isolate the equivalence relations and evaluate the equivalence alignment only
+		URIAlignment eqOnly = AlignmentOperations.extractEquivalenceRelations(nonConflictedMergedAlignment);
+
+		Map<String, EvaluationScore> eqEvaluationMap = new TreeMap<String, EvaluationScore>();
+
+		for (double conf : confidence) {
+			EvaluationScore evalScore = new EvaluationScore();
+			eqOnly.cut(conf);
+			eval = new PRecEvaluator(refalign_EQ, eqOnly);
+			eval.eval(p);
+			precision = Double.valueOf(eval.getResults().getProperty("precision").toString());
+			recall = Double.valueOf(eval.getResults().getProperty("recall").toString());
+			fMeasure = Double.valueOf(eval.getResults().getProperty("fmeasure").toString());
+			evalScore.setPrecision(precision);
+			evalScore.setRecall(recall);
+			evalScore.setfMeasure(fMeasure);
+			//put the evalation score according to each confidence value in the map
+			eqEvaluationMap.put(String.valueOf(conf), evalScore);			
+		}
+
+		Evaluator.evaluateSingleMatcherThresholds(eqEvaluationMap, "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/MAJORITYVOTE/MAJORITYVOTE_EQ_ONLY_"+date);
+
+
+		//isolate the subsumption relations and evaluate the subsumption alignment only
+		URIAlignment subOnly = AlignmentOperations.extractSubsumptionRelations(nonConflictedMergedAlignment);
+
+		Map<String, EvaluationScore> subEvaluationMap = new TreeMap<String, EvaluationScore>();
+
+		for (double conf : confidence) {
+			EvaluationScore evalScore = new EvaluationScore();
+			subOnly.cut(conf);
+			eval = new PRecEvaluator(refalign_SUB, subOnly);
+			eval.eval(p);
+			precision = Double.valueOf(eval.getResults().getProperty("precision").toString());
+			recall = Double.valueOf(eval.getResults().getProperty("recall").toString());
+			fMeasure = Double.valueOf(eval.getResults().getProperty("fmeasure").toString());
+			evalScore.setPrecision(precision);
+			evalScore.setRecall(recall);
+			evalScore.setfMeasure(fMeasure);
+			//put the evalation score according to each confidence value in the map
+			subEvaluationMap.put(String.valueOf(conf), evalScore);			
+		}
+
+		Evaluator.evaluateSingleMatcherThresholds(subEvaluationMap, "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/MAJORITYVOTE/MAJORITYVOTE_SUB_ONLY_"+date);
+
 		//store the merged alignment
 		File outputAlignment = null;
 
 		PrintWriter writer = null;
 		AlignmentVisitor renderer = null;
-		
-		double[] confidence = {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
-		
-		double precision = 0;
-		double recall = 0;
-		double fMeasure = 0;
-		PRecEvaluator eval = null;
-		Properties p = new Properties();
+
+
 		Map<String, EvaluationScore> evaluationMap = new TreeMap<String, EvaluationScore>();
-		
+
 		for (double conf : confidence) {
 			EvaluationScore evalScore = new EvaluationScore();
 			nonConflictedMergedAlignment.cut(conf);
-			eval = new PRecEvaluator(refalign, nonConflictedMergedAlignment);
+			eval = new PRecEvaluator(refalign_EQ_AND_SUB, nonConflictedMergedAlignment);
 			eval.eval(p);
 			precision = Double.valueOf(eval.getResults().getProperty("precision").toString());
 			recall = Double.valueOf(eval.getResults().getProperty("recall").toString());
@@ -128,7 +192,7 @@ public class EvalMajorityVoteCombination {
 			evalScore.setfMeasure(fMeasure);
 			//put the evalation score according to each confidence value in the map
 			evaluationMap.put(String.valueOf(conf), evalScore);			
-			outputAlignment = new File("./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/MAJORITYVOTE/MERGED_NOWEIGHT/MajorityVote"+dataset+"_"+conf+".rdf");
+			outputAlignment = new File("./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/MAJORITYVOTE/MERGED_NOWEIGHT/MajorityVote"+DATASET+"_"+conf+".rdf");
 			writer = new PrintWriter(
 					new BufferedWriter(
 							new FileWriter(outputAlignment)), true); 
@@ -137,12 +201,11 @@ public class EvalMajorityVoteCombination {
 			nonConflictedMergedAlignment.render(renderer);
 			writer.flush();
 			writer.close();
-			//print evaluation results to console
-			Evaluator.evaluateSingleAlignment("Cut Threshold " + conf, nonConflictedMergedAlignment, referenceAlignment);
+
 		}
-		
-		Evaluator.evaluateSingleMatcherThresholds(evaluationMap, "./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/MAJORITYVOTE/MERGED_NOWEIGHT");
-		
+
+		Evaluator.evaluateSingleMatcherThresholds(evaluationMap, "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/MAJORITYVOTE/MAJORITYVOTE_"+date);
+
 
 	}
 

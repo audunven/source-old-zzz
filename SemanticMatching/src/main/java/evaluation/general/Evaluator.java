@@ -51,6 +51,7 @@ import org.semanticweb.owl.align.AlignmentException;
 
 import fr.inrialpes.exmo.align.impl.BasicAlignment;
 import fr.inrialpes.exmo.align.impl.URIAlignment;
+import fr.inrialpes.exmo.align.impl.eval.DiffEvaluator;
 import fr.inrialpes.exmo.align.impl.eval.PRecEvaluator;
 import fr.inrialpes.exmo.align.parser.AlignmentParser;
 import utilities.StringUtilities;
@@ -99,6 +100,7 @@ public class Evaluator {
 		System.out.println("\n");
 
 	}
+	
 
 	/**
 	 * Evaluates a single alignment against a reference alignment and prints precision, recall, f-measure, true positives (TP), false positives (FP) and false negatives (FN)
@@ -133,6 +135,43 @@ public class Evaluator {
 		System.out.println("False negatives (FN): " + fn);
 		System.out.println("\n");
 
+	}
+	
+	public static void evaluateSingleAlignmentDiff (URIAlignment inputAlignment, String referenceAlignmentFileName) throws AlignmentException, URISyntaxException, IOException {
+		
+		AlignmentParser refAlignParser = new AlignmentParser(0);
+
+		Alignment referenceAlignment = refAlignParser.parse(new URI(StringUtilities.convertToFileURL(referenceAlignmentFileName)));
+
+		Properties p = new Properties();
+		
+		PRecEvaluator eval = new PRecEvaluator(referenceAlignment, inputAlignment);
+		eval.eval(p);
+
+		System.out.println("------------------------------");
+		System.out.println("Evaluator scores for " + inputAlignment.getType());
+		System.out.println("------------------------------");
+		System.out.println("F-measure: " + eval.getResults().getProperty("fmeasure").toString());
+		System.out.println("Precision: " + eval.getResults().getProperty("precision").toString());
+		
+		
+		DiffEvaluator evalDiff = new DiffEvaluator(referenceAlignment, inputAlignment);
+		//eval.eval(p);
+		evalDiff.diff();
+		
+		System.out.println("Number of true positives: " + evalDiff.getTruePositive().size() + ", Number of false positives: " + evalDiff.getFalsePositive().size() + ", Number of false negatives: " + evalDiff.getFalseNegative().size());
+		
+		
+		File outputFile = new File("./files/test.txt");
+		
+		PrintWriter writer = new PrintWriter(
+				new BufferedWriter(
+						new FileWriter(outputFile)), true); 
+		
+		
+		eval.write(writer);
+		
+		
 	}
 	
 	
@@ -662,14 +701,21 @@ public class Evaluator {
 
 
 	public static void main(String[] args) throws AlignmentException, URISyntaxException, IOException {
-
-		/* RUN COMPLETE EVALUATION */
-		String alignmentFolder = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ALIGNMENTS/MISMATCHDETECTION/ALIGNMENTS";
-		String refalign = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
-		String outputEvaluationFile = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ALIGNMENTS/MISMATCHDETECTION/EVALUATION-INITIALALIGNMENTS.xslx";
-		String datasetName = "ATM-MISMATCH-EQUIVALENCE";
 		
-		runCompleteEvaluation(alignmentFolder, refalign, outputEvaluationFile, datasetName);
+		/* TRYING DIFF EVALUATOR */
+		File singleAlignment = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ALIGNMENTS/PROFILEWEIGHT/MERGED_SIGMOID/PROFILEWEIGHT_MERGED_SIGMOIDATMONTO-AIRM.rdf");
+		AlignmentParser parser = new AlignmentParser();
+		URIAlignment alignmentFile = (URIAlignment) parser.parse(singleAlignment.toURI().toString());
+		String refalign = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQ-SUB.rdf";
+		evaluateSingleAlignmentDiff(alignmentFile, refalign);
+
+//		/* RUN COMPLETE EVALUATION */
+//		String alignmentFolder = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ALIGNMENTS/MISMATCHDETECTION/ALIGNMENTS";
+//		String refalign = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
+//		String outputEvaluationFile = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ALIGNMENTS/MISMATCHDETECTION/EVALUATION-INITIALALIGNMENTS.xslx";
+//		String datasetName = "ATM-MISMATCH-EQUIVALENCE";
+//		
+//		runCompleteEvaluation(alignmentFolder, refalign, outputEvaluationFile, datasetName);
 
 
 		/* EVALUATE SINGLE ALIGNMENT */

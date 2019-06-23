@@ -137,6 +137,53 @@ public class WordNet {
 
 	}
 
+	public static boolean containsHyponyms (String source, String target) {
+
+		boolean containsHyponyms = false;
+
+		Set<String> tokens1 = new HashSet<String>();
+		Set<String> tokens2 = new HashSet<String>();
+		Set<String> hyponyms = new HashSet<String>();
+
+		for (String s : tokens1) {
+			hyponyms.addAll(getHyponymsAsSet(s.toLowerCase()));
+		}
+
+		for (String s : tokens2) {
+			if (hyponyms.contains(s.toLowerCase())) 
+				containsHyponyms = true;
+			else 
+				containsHyponyms = false;
+
+		}
+
+		return containsHyponyms;
+
+	}
+
+	public static boolean containsMeronyms (String source, String target) {
+
+		boolean containsHMeronyms = false;
+
+		Set<String> tokens1 = new HashSet<String>();
+		Set<String> tokens2 = new HashSet<String>();
+		Set<String> meronyms = new HashSet<String>();
+
+		for (String s : tokens1) {
+			meronyms.addAll(getHyponymsAsSet(s.toLowerCase()));
+		}
+
+		for (String s : tokens2) {
+			if (meronyms.contains(s.toLowerCase())) 
+				containsHMeronyms = true;
+			else 
+				containsHMeronyms = false;
+
+		}
+
+		return containsHMeronyms;
+	}
+
 	public static String getGloss(String inputWord) throws FileNotFoundException, JWNLException {
 
 		JWNL.initialize(new FileInputStream("/Users/audunvennesland/git/Compose/compose/file_property.xml"));
@@ -217,7 +264,6 @@ public class WordNet {
 		Set<String> synSet = new HashSet<String>();
 
 		String[] synonyms = database.getAllSynonyms(inputWord, "n");
-
 
 		for (int i = 0; i < synonyms.length; i++) {
 			synSet.add(synonyms[i]);
@@ -310,8 +356,6 @@ public class WordNet {
 	}
 
 
-
-
 	/**
 	 * Retrieves all meronyms for the inputWord from WordNet and returns them as a set
 	 * @param inputWord
@@ -328,6 +372,39 @@ public class WordNet {
 		}
 
 		return merSet;
+	}
+
+	/**
+	 * Retrieves a set of meronyms (from WordNet) using a string representation of a word as parameter. In this method "composite" meronyms (e.g. air terminal) are split into individual tokens (e.g. air AND terminal).
+	 * @param inputWord String representation of the word 
+	 * @return a set of strings representing meronyms associated with the input parameter
+	 * @throws FileNotFoundException
+	 * @throws JWNLException
+	 */
+	public static Set<String> getMeronymTokensFromString (String inputWord) throws FileNotFoundException, JWNLException {
+
+		Set<String> meronyms = new HashSet<String>();
+		StringBuffer sb = new StringBuffer();
+
+		//get the meronym only if the word is represented in WordNet
+		if (WordNet.containedInWordNet(inputWord.toLowerCase())) {
+			meronyms = getMeronymSet(inputWord.toLowerCase());
+		}
+
+		Set<String> meronymTokens = new HashSet<String>();
+
+
+		for (String s : meronyms) {
+
+			String[] array = s.split(" ");
+			for (String string : array) {
+
+				meronymTokens.add(string);
+
+			}
+		}
+
+		return meronymTokens;
 	}
 
 	/**
@@ -658,12 +735,50 @@ public class WordNet {
 		return rep;
 	}
 
+	public static double computeAvgJCSim(Set<String> concept1Mods, Set<String> concept2Mods) {
+
+		double globalJCSim = 0;
+		int counter = 0;
+
+		for (String c1Mod : concept1Mods) {
+			for (String c2Mod : concept2Mods) {
+				counter++;
+				double localJCSim = WordNet.computeJiangConrath(c1Mod.toLowerCase(), c2Mod.toLowerCase());
+				System.out.println("The localJCSim between " + c1Mod + " and " + c2Mod + " is " + localJCSim);
+				globalJCSim += localJCSim;
+				System.out.println("The globalJCSim is now: " + globalJCSim);
+				System.out.println("The counter is now " + counter);
+
+			}
+		}
+		
+		System.out.println("Returning " + globalJCSim + " / " + counter);
+
+		return globalJCSim / counter;
+
+
+	}
+
 	public static void main(String[] args) throws FileNotFoundException, JWNLException {
 
-		String s = "record";
-		String t = "book";
+		String concept1 = "strip";
+		String concept2 = "cartoon";
+		
+		System.out.println("The similarity between " + concept1 + " and " + concept2 + " is " + computeJiangConrath(concept1, concept2));
+		
+		String c1 = "author";
+		String c2 = "writer";
+		
+		Set<String> c1Set = getSynonymSet(c1);
+		Set<String> c2Set = getSynonymSet(c2);
+		
+		System.out.println("The jaccard similarity between c1Set and c2Set is " + Jaccard.jaccardSetSim(c1Set, c2Set));
 
-		System.out.println("The Resnik score is " + computeResnik(s,t));
+
+
+		//public static boolean containsHyponyms (String source, String target) {
+
+
 
 		//		Set<String> s_set = getAllSynonymSet(s);
 		//		Set<String> t_set = getAllSynonymSet(t);

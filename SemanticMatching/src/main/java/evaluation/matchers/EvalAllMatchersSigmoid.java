@@ -47,13 +47,14 @@ import ontologyprofiling.OntologyProfiler;
 import subsumptionmatching.CompoundMatcher;
 import subsumptionmatching.ContextSubsumptionMatcher;
 import subsumptionmatching.DefinitionSubsumptionMatcher;
+import subsumptionmatching.DefinitionSubsumptionMatcherSigmoid;
 import subsumptionmatching.LexicalSubsumptionMatcher;
 import utilities.StringUtilities;
 
 public class EvalAllMatchersSigmoid {
 
 	//ATMONTO-AIRM || BIBFRAME-SCHEMAORG || OAEI2011
-	final static String dataset = "BIBFRAME-SCHEMAORG";
+	final static String dataset = "ATMONTO-AIRM";
 
 	//EQUIVALENCE || SUBSUMPTION
 	final static String relationType = "SUBSUMPTION";
@@ -63,7 +64,7 @@ public class EvalAllMatchersSigmoid {
 	static boolean weighted;
 	
 	//PARAMETERS FOR THE SIGMOID WEIGHT CALCULATION
-	static int slope = 2;
+	static int slope = 3;
 	static double rangeMin = 0.5;
 	static double rangeMax = 0.7;
 
@@ -90,7 +91,7 @@ public class EvalAllMatchersSigmoid {
 		if (dataset.equalsIgnoreCase("ATMONTO-AIRM")) {
 			ontoFile1 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/ATMOntoCoreMerged.owl");
 			ontoFile2 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/airm-mono.owl");
-			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_trained_ontology_tokens.txt";
+			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_embeddings.txt";
 			referenceAlignment = "./files/_PHD_EVALUATION/"+dataset+"/REFALIGN/ReferenceAlignment-"+dataset+"-" + relationType + ".rdf";
 
 			storePath = "./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/INDIVIDUAL_ALIGNMENTS/"+ relationType + "_" +weightType;
@@ -100,7 +101,7 @@ public class EvalAllMatchersSigmoid {
 
 			ontoFile1 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/bibframe.rdf");
 			ontoFile2 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/schema-org.owl");
-			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_trained.txt";
+			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_embeddings.txt";
 			referenceAlignment = "./files/_PHD_EVALUATION/"+dataset+"/REFALIGN/ReferenceAlignment-"+dataset+"-" + relationType + ".rdf";
 
 			storePath = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ALIGNMENTS/INDIVIDUAL_ALIGNMENTS/"+ relationType + "_" +weightType;
@@ -1508,7 +1509,7 @@ public class EvalAllMatchersSigmoid {
 			AlignmentParser aparser = new AlignmentParser(0);
 			Alignment refalign = aparser.parse(new URI(StringUtilities.convertToFileURL(referenceAlignment)));
 		
-			AlignmentProcess a = new DefinitionSubsumptionMatcher(onto1, onto2, profileScore, slope, rangeMin, rangeMax);
+			AlignmentProcess a = new DefinitionSubsumptionMatcherSigmoid(onto1, onto2, profileScore, slope, rangeMin, rangeMax);
 			a.init(ontoFile1.toURI(), ontoFile2.toURI());
 			Properties params = new Properties();
 			params.setProperty("", "");

@@ -1,4 +1,4 @@
-package evaluation.profileweight;
+package evaluation.combination;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -44,9 +46,10 @@ import subsumptionmatching.LexicalSubsumptionMatcherSigmoid;
 import utilities.AlignmentOperations;
 import utilities.StringUtilities;
 
-public class EvaluateMergedAlignmentProfileWeightSigmoid {
+public class EvaluateProfileWeightCombination {
 
-	final static String dataset = "BIBFRAME-SCHEMAORG";
+	//ATMONTO-AIRM || BIBFRAME-SCHEMAORG
+	final static String DATASET = "BIBFRAME-SCHEMAORG";
 
 	//these parameters are used for the sigmoid weight configuration
 	final static int slope = 3;
@@ -57,28 +60,48 @@ public class EvaluateMergedAlignmentProfileWeightSigmoid {
 	static File ontoFile1 = null;
 	static File ontoFile2 = null;
 	static String vectorFile = null;
+	static String referenceAlignmentEQ = null;
+	static String referenceAlignmentSUB = null;
 	static String referenceAlignmentEQAndSUB = null;
 	static String relationType ="EQ_SUB";
+	static String mismatchStorePath = null;
+	static Date date = Calendar.getInstance().getTime();
 
 
 	public static void main(String[] args) throws OWLOntologyCreationException, JWNLException, IOException, AlignmentException, URISyntaxException {
 
-		if (dataset.equalsIgnoreCase("ATMONTO-AIRM")) {
+		if (DATASET.equalsIgnoreCase("ATMONTO-AIRM")) {
 			ontoFile1 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
 			ontoFile2 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
+			referenceAlignmentEQ = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQUIVALENCE.rdf";
+			referenceAlignmentSUB = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-SUBSUMPTION.rdf";
 			referenceAlignmentEQAndSUB = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQ-SUB.rdf";
-			vectorFile = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_trained_ontology_tokens.txt";
+			vectorFile = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_embeddings.txt";
+			mismatchStorePath = "./files/_PHD_EVALUATION/ATMONTO-AIRM/MISMATCHES";
 
-		} else if (dataset.equalsIgnoreCase("BIBFRAME-SCHEMAORG")) {
+		} else if (DATASET.equalsIgnoreCase("BIBFRAME-SCHEMAORG")) {
 			ontoFile1 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/bibframe.rdf");
 			ontoFile2 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/schema-org.owl");
+			referenceAlignmentEQ = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
+			referenceAlignmentSUB = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-SUBSUMPTION.rdf";
 			referenceAlignmentEQAndSUB = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQ-SUB.rdf";
-			vectorFile = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_trained.txt";
+			vectorFile = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_embeddings.txt";
+			mismatchStorePath = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/MISMATCHES";
 		}
 
 		//compute profile scores
 		System.err.println("Computing Profiling Scores");
 		Map<String, Double> ontologyProfilingScores = OntologyProfiler.computeOntologyProfileScores(ontoFile1, ontoFile2, vectorFile);
+
+		URIAlignment refalign_EQ_AND_SUB = null;
+		URIAlignment refalign_EQ = null;
+		URIAlignment refalign_SUB = null;
+
+		AlignmentParser aparser = new AlignmentParser(0);
+		refalign_EQ_AND_SUB = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(referenceAlignmentEQAndSUB)));
+		refalign_EQ = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(referenceAlignmentEQ)));
+		refalign_SUB = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(referenceAlignmentSUB)));
+
 
 		//compute EQ alignments
 		ArrayList<URIAlignment> eqAlignments = computeEQAlignments(ontoFile1, ontoFile2, ontologyProfilingScores, vectorFile);
@@ -87,7 +110,10 @@ public class EvaluateMergedAlignmentProfileWeightSigmoid {
 		URIAlignment combinedEQAlignment = combineEQAlignments(eqAlignments);
 
 		//remove mismatches from combined EQ alignment
-		URIAlignment combinedEQAlignmentWithoutMismatches = removeMismatches(combinedEQAlignment);
+		URIAlignment combinedEQAlignmentWithoutMismatches = removeMismatches(combinedEQAlignment, mismatchStorePath);
+
+		//evaluate EQ only
+		Evaluator.evaluateSingleAlignment("Evaluation Profile Weight EQ", combinedEQAlignmentWithoutMismatches, referenceAlignmentEQ);
 
 		//compute SUB alignments
 		ArrayList<URIAlignment> subAlignments = computeSUBAlignments(ontoFile1, ontoFile2, ontologyProfilingScores, vectorFile);
@@ -95,16 +121,75 @@ public class EvaluateMergedAlignmentProfileWeightSigmoid {
 		//combine SUB alignments into a final SUB alignment
 		URIAlignment combinedSUBAlignment = combineSUBAlignments(subAlignments);
 
+		//evaluate SUB only (after having resolved any conflicts)
+		URIAlignment nonConflictedSUBAlignment = AlignmentConflictResolution.resolveAlignmentConflict(combinedSUBAlignment);
+		Evaluator.evaluateSingleAlignment("Evaluation Profile Weight SUB", nonConflictedSUBAlignment, referenceAlignmentSUB);
+
 		//merge final EQ and final SUB alignment
 		URIAlignment mergedEQAndSubAlignment = mergeEQAndSubAlignments(combinedEQAlignmentWithoutMismatches, combinedSUBAlignment);
 
 		//resolve conflicts in merged alignment
 		URIAlignment nonConflictedMergedAlignment = AlignmentConflictResolution.resolveAlignmentConflict(mergedEQAndSubAlignment);
 
+		double[] confidence = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
+
+		double precision = 0;
+		double recall = 0;
+		double fMeasure = 0;
+		PRecEvaluator eval = null;
+		Properties p = new Properties();
+
+		//isolate the equivalence relations and evaluate the equivalence alignment only
+		URIAlignment eqOnly = AlignmentOperations.extractEquivalenceRelations(nonConflictedMergedAlignment);
+
+		Map<String, EvaluationScore> eqEvaluationMap = new TreeMap<String, EvaluationScore>();
+
+		for (double conf : confidence) {
+			EvaluationScore evalScore = new EvaluationScore();
+			eqOnly.cut(conf);
+			eval = new PRecEvaluator(refalign_EQ, eqOnly);
+			eval.eval(p);
+			precision = Double.valueOf(eval.getResults().getProperty("precision").toString());
+			recall = Double.valueOf(eval.getResults().getProperty("recall").toString());
+			fMeasure = Double.valueOf(eval.getResults().getProperty("fmeasure").toString());
+			evalScore.setPrecision(precision);
+			evalScore.setRecall(recall);
+			evalScore.setfMeasure(fMeasure);
+			//put the evalation score according to each confidence value in the map
+			eqEvaluationMap.put(String.valueOf(conf), evalScore);			
+
+		}
+
+		Evaluator.evaluateSingleMatcherThresholds(eqEvaluationMap, "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/PROFILEWEIGHT/PROFILEWEIGHT_EQ_ONLY_"+date);
+
+
+		//isolate the subsumption relations and evaluate the subsumption alignment only
+		URIAlignment subOnly = AlignmentOperations.extractSubsumptionRelations(nonConflictedMergedAlignment);
+
+		Map<String, EvaluationScore> subEvaluationMap = new TreeMap<String, EvaluationScore>();
+
+		for (double conf : confidence) {
+			EvaluationScore evalScore = new EvaluationScore();
+			subOnly.cut(conf);
+			eval = new PRecEvaluator(refalign_SUB, subOnly);
+			eval.eval(p);
+			precision = Double.valueOf(eval.getResults().getProperty("precision").toString());
+			recall = Double.valueOf(eval.getResults().getProperty("recall").toString());
+			fMeasure = Double.valueOf(eval.getResults().getProperty("fmeasure").toString());
+			evalScore.setPrecision(precision);
+			evalScore.setRecall(recall);
+			evalScore.setfMeasure(fMeasure);
+			//put the evalation score according to each confidence value in the map
+			subEvaluationMap.put(String.valueOf(conf), evalScore);			
+		}
+
+		Evaluator.evaluateSingleMatcherThresholds(subEvaluationMap, "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/PROFILEWEIGHT/PROFILEWEIGHT_SUB_ONLY_"+date);
+
+
 		System.err.println("\nThe merged EQ and SUB alignment contains " + nonConflictedMergedAlignment.nbCells() + " relations");
 
 		//store the merged alignment
-		File outputAlignment = new File("./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/PROFILEWEIGHT/MERGED_SIGMOID/PROFILEWEIGHT_MERGED_SIGMOID"+dataset+".rdf");
+		File outputAlignment = new File("./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/PROFILEWEIGHT/MERGED_SIGMOID/PROFILEWEIGHT_MERGED_SIGMOID"+DATASET+".rdf");
 
 		PrintWriter writer = new PrintWriter(
 				new BufferedWriter(
@@ -121,14 +206,8 @@ public class EvaluateMergedAlignmentProfileWeightSigmoid {
 		Evaluator.evaluateSingleAlignment(nonConflictedMergedAlignment, referenceAlignmentEQAndSUB);
 
 		//evaluate the profile weight alignment at different thresholds
-		AlignmentParser aparser = new AlignmentParser(0);
 		URIAlignment refalign = (URIAlignment) aparser.parse(new URI(StringUtilities.convertToFileURL(referenceAlignmentEQAndSUB)));
-		double[] confidence = {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
-		double precision = 0;
-		double recall = 0;
-		double fMeasure = 0;
-		PRecEvaluator eval = null;
-		Properties p = new Properties();
+
 		Map<String, EvaluationScore> evaluationMap = new TreeMap<String, EvaluationScore>();
 
 		for (double conf : confidence) {
@@ -144,7 +223,7 @@ public class EvaluateMergedAlignmentProfileWeightSigmoid {
 			evalScore.setfMeasure(fMeasure);
 			//put the evalation score according to each confidence value in the map
 			evaluationMap.put(String.valueOf(conf), evalScore);			
-			outputAlignment = new File("./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/PROFILEWEIGHT/MERGED_SIGMOID/PROFILEWEIGHT_MERGED_SIGMOID"+dataset+"_"+conf+".rdf");
+			outputAlignment = new File("./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/PROFILEWEIGHT/MERGED_SIGMOID/PROFILEWEIGHT_MERGED_SIGMOID"+DATASET+"_"+conf+".rdf");
 			writer = new PrintWriter(
 					new BufferedWriter(
 							new FileWriter(outputAlignment)), true); 
@@ -154,10 +233,10 @@ public class EvaluateMergedAlignmentProfileWeightSigmoid {
 			writer.flush();
 			writer.close();
 			//print evaluation results to console
-			Evaluator.evaluateSingleAlignment("Cut Threshold " + conf, nonConflictedMergedAlignment, referenceAlignmentEQAndSUB);
+			Evaluator.evaluateSingleAlignment("Profile Weight " + conf, nonConflictedMergedAlignment, referenceAlignmentEQAndSUB);
 		}
 
-		Evaluator.evaluateSingleMatcherThresholds(evaluationMap, "./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/PROFILEWEIGHT/PROFILEWEIGHT_MERGED_SIGMOID");
+		Evaluator.evaluateSingleMatcherThresholds(evaluationMap, "./files/_PHD_EVALUATION/"+DATASET+"/ALIGNMENTS/PROFILEWEIGHT/PROFILEWEIGHT_"+date);
 
 	}
 
@@ -247,11 +326,76 @@ public class EvaluateMergedAlignmentProfileWeightSigmoid {
 
 	}
 
-	private static URIAlignment removeMismatches (URIAlignment combinedEQAlignment) throws AlignmentException, OWLOntologyCreationException, FileNotFoundException, JWNLException {
+	private static URIAlignment removeMismatches (URIAlignment combinedEQAlignment, String mismatchStorePath) throws AlignmentException, OWLOntologyCreationException, JWNLException, URISyntaxException, IOException {
+
+		//store the merged alignment
+		File initialAlignment = new File(mismatchStorePath + "/initialAlignment.rdf");
+		File conceptScopeMismatchAlignment = new File(mismatchStorePath + "/conceptScopeMismatch.rdf");
+		File structureMismatchAlignment = new File(mismatchStorePath + "/structureMismatch.rdf");
+		File domainMismatchAlignment = new File(mismatchStorePath + "/domainMismatch.rdf");
+		PrintWriter writer = null;
+		AlignmentVisitor renderer = null;
+
+		//evaluate initial alignment
+		Evaluator.evaluateSingleAlignment(combinedEQAlignment, referenceAlignmentEQ);
+		
+		writer = new PrintWriter(
+				new BufferedWriter(
+						new FileWriter(initialAlignment)), true); 
+		renderer = new RDFRendererVisitor(writer);
+
+		combinedEQAlignment.render(renderer);
+
+		writer.flush();
+		writer.close();
 
 		URIAlignment conceptScopeMismatchDetection = ConceptScopeMismatch.detectConceptScopeMismatch(combinedEQAlignment);
+		System.out.println("Concept Scope Mismatch Detection removed " + ( combinedEQAlignment.nbCells() - conceptScopeMismatchDetection.nbCells() ) + " relations");
+		
+		writer = new PrintWriter(
+				new BufferedWriter(
+						new FileWriter(conceptScopeMismatchAlignment)), true); 
+		renderer = new RDFRendererVisitor(writer);
+
+		conceptScopeMismatchDetection.render(renderer);
+
+		writer.flush();
+		writer.close();
+
+		//evaluate concept scope mismatch detection
+		Evaluator.evaluateSingleAlignment("Concept Scope Mismatch Detection", conceptScopeMismatchDetection, referenceAlignmentEQ);
+
 		URIAlignment structureMismatchDetection = StructureMismatch.detectStructureMismatches(conceptScopeMismatchDetection, ontoFile1, ontoFile2);
+		System.out.println("Structure Mismatch Detection removed " + ( conceptScopeMismatchDetection.nbCells() - structureMismatchDetection.nbCells() ) + " relations");
+		
+		writer = new PrintWriter(
+				new BufferedWriter(
+						new FileWriter(structureMismatchAlignment)), true); 
+		renderer = new RDFRendererVisitor(writer);
+
+		structureMismatchDetection.render(renderer);
+
+		writer.flush();
+		writer.close();
+
+		//evaluate structure mismatch detection
+		Evaluator.evaluateSingleAlignment("Structure Mismatch Detection", structureMismatchDetection, referenceAlignmentEQ);
+
 		URIAlignment domainMismatchDetection = DomainMismatch.filterAlignment(structureMismatchDetection);
+		System.out.println("Domain Mismatch Detection removed " + ( structureMismatchDetection.nbCells() - domainMismatchDetection.nbCells() ) + " relations");
+		
+		writer = new PrintWriter(
+				new BufferedWriter(
+						new FileWriter(domainMismatchAlignment)), true); 
+		renderer = new RDFRendererVisitor(writer);
+
+		domainMismatchDetection.render(renderer);
+
+		writer.flush();
+		writer.close();
+
+		//evaluate domain mismatch detection
+		Evaluator.evaluateSingleAlignment("Domain Mismatch Detection", domainMismatchDetection, referenceAlignmentEQ);
 
 		return domainMismatchDetection;
 	}

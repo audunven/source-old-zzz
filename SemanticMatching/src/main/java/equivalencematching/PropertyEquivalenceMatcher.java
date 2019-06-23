@@ -85,9 +85,9 @@ public class PropertyEquivalenceMatcher extends ObjectAlignment implements Align
 	//test method
 	public static void main(String[] args) throws OWLOntologyCreationException, AlignmentException, URISyntaxException, IOException {
 
-		File ontoFile1 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/bibframe.rdf");
-		File ontoFile2 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/schema-org.owl");
-		String referenceAlignment = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
+		File ontoFile1 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301302/301302-301.rdf");
+		File ontoFile2 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301302/301302-302.rdf");
+		String referenceAlignment = "./files/_PHD_EVALUATION/OAEI2011/REFALIGN/301302/301-302-EQUIVALENCE.rdf";
 
 		//				File ontoFile1 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
 		//				File ontoFile2 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
@@ -209,6 +209,8 @@ public class PropertyEquivalenceMatcher extends ObjectAlignment implements Align
 
 					Set<String> props1 = classAndPropMapOnto1.get(source);
 					Set<String> props2 = classAndPropMapOnto2.get(target);
+					
+					System.out.println("\nMatching " + source + " and " + target);
 
 					//JACCARD SIMILARITY WITH ISUB AND EQUAL CONCEPTS
 					sim = SimilarityMetrics.jaccardSetSimISubEqualConcepts(confidence, source, target, props1, props2);

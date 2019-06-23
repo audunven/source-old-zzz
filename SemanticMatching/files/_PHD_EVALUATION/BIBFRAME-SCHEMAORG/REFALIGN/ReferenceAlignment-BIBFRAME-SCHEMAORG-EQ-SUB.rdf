@@ -55,7 +55,7 @@
       <entity1 rdf:resource='http://id.loc.gov/ontologies/bibframe#MusicFormat'/>
       <entity2 rdf:resource='http://schema.org#MusicReleaseFormatType'/>
       <relation>=</relation>
-      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>0.9</measure>
+      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>1.0</measure>
     </Cell>
   </map>
   <map>
@@ -103,7 +103,7 @@
       <entity1 rdf:resource='http://id.loc.gov/ontologies/bibframe#Audio'/>
       <entity2 rdf:resource='http://schema.org#AudioObject'/>
       <relation>=</relation>
-      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>0.8875</measure>
+      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>1.0</measure>
     </Cell>
   </map>
   <map>
@@ -111,7 +111,7 @@
       <entity1 rdf:resource='http://id.loc.gov/ontologies/bibframe#BookFormat'/>
       <entity2 rdf:resource='http://schema.org#BookFormatType'/>
       <relation>=</relation>
-      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>0.95</measure>
+      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>1.0</measure>
     </Cell>
   </map>
   <map>
@@ -119,7 +119,7 @@
       <entity1 rdf:resource='http://id.loc.gov/ontologies/bibframe#IntendedAudience'/>
       <entity2 rdf:resource='http://schema.org#Audience'/>
       <relation>=</relation>
-      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>0.8333333333333333</measure>
+      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>1.0</measure>
     </Cell>
   </map>
   <map>
@@ -135,7 +135,7 @@
       <entity1 rdf:resource='http://id.loc.gov/ontologies/bibframe#Media'/>
       <entity2 rdf:resource='http://schema.org#MediaObject'/>
       <relation>=</relation>
-      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>0.8875</measure>
+      <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>1.0</measure>
     </Cell>
   </map>  
   <map>

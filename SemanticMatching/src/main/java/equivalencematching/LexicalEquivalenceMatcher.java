@@ -39,64 +39,45 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 	int slope;
 	double rangeMin;
 	double rangeMax;
-	
+
 	static OWLOntology sourceOntology;
 	static OWLOntology targetOntology;
 
 	public LexicalEquivalenceMatcher(double profileScore) {
 		this.profileScore = profileScore;
 	}
-	
+
 	public LexicalEquivalenceMatcher(File ontoFile1, File ontoFile2, double profileScore) {
 		this.profileScore = profileScore;
 	}
-	
+
 	public LexicalEquivalenceMatcher(OWLOntology onto1, OWLOntology onto2, double profileScore) {
 		this.profileScore = profileScore;
 		sourceOntology = onto1;
 		targetOntology = onto2;
 	}
-	
-	public LexicalEquivalenceMatcher(double profileScore, int slope, double rangeMin, double rangeMax) {
-		this.profileScore = profileScore;
-		this.slope = slope;
-		this.rangeMin = rangeMin;
-		this.rangeMax = rangeMax;
-	}
-	
-	public LexicalEquivalenceMatcher(OWLOntology onto1, OWLOntology onto2, double profileScore, int slope, double rangeMin, double rangeMax) {
-		sourceOntology = onto1;
-		targetOntology = onto2;
-		this.profileScore = profileScore;
-		this.slope = slope;
-		this.rangeMin = rangeMin;
-		this.rangeMax = rangeMax;
-	}
+
 
 
 	//test method
 	public static void main(String[] args) throws OWLOntologyCreationException, AlignmentException, URISyntaxException, IOException {
 
-		//			File ontoFile1 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301304/301304-301.rdf");
-		//			File ontoFile2 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301304/301304-304.rdf");
-		//			String referenceAlignment = "./files/_PHD_EVALUATION/OAEI2011/REFALIGN/301304/301-304-EQUIVALENCE.rdf";
-		//			String vectorFile = "./files//_PHD_EVALUATION/EMBEDDINGS/wikipedia_trained.txt";
+		//		File ontoFile1 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301304/301304-301.rdf");
+		//		File ontoFile2 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301304/301304-304.rdf");
+		//		String referenceAlignment = "./files/_PHD_EVALUATION/OAEI2011/REFALIGN/301304/301-304-EQUIVALENCE.rdf";
 
 //		File ontoFile1 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/bibframe.rdf");
 //		File ontoFile2 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/schema-org.owl");
 //		String referenceAlignment = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
-//		String vectorFile = "./files//_PHD_EVALUATION/EMBEDDINGS/wikipedia_trained.txt";
 
-		File ontoFile1 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
-		File ontoFile2 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
-		String referenceAlignment = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQUIVALENCE.rdf";
+				File ontoFile1 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
+				File ontoFile2 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
+				String referenceAlignment = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQUIVALENCE.rdf";
 
 		double testProfileScore = 0.72;
-		int testSlope = 12;
-		double testRangeMin = 0.5;
-		double testRangeMax = 0.7;
 
-		AlignmentProcess a = new LexicalEquivalenceMatcher(sourceOntology, targetOntology, testProfileScore, testSlope, testRangeMin, testRangeMax);
+
+		AlignmentProcess a = new LexicalEquivalenceMatcher(sourceOntology, targetOntology, testProfileScore);
 		a.init(ontoFile1.toURI(), ontoFile2.toURI());
 		Properties params = new Properties();
 		params.setProperty("", "");
@@ -134,7 +115,7 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 		System.out.println("Evaluation with threshold 0.6:");
 		LexicalEquivalenceMatcherAlignment.cut(0.6);
 		Evaluator.evaluateSingleAlignment(LexicalEquivalenceMatcherAlignment, referenceAlignment);
-		
+
 		System.out.println("Printing relations at 0.6:");
 		for (Cell c : LexicalEquivalenceMatcherAlignment) {
 			System.out.println(c.getObject1() + " " + c.getObject2() + " " + c.getRelation().getRelation() + " " + c.getStrength());
@@ -145,15 +126,15 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 		Evaluator.evaluateSingleAlignment(LexicalEquivalenceMatcherAlignment, referenceAlignment);
 
 	}
-	
+
 	public static URIAlignment returnLEMAlignment (File ontoFile1, File ontoFile2, double weight) throws OWLOntologyCreationException, AlignmentException {
-		
+
 		URIAlignment LEMAlignment = new URIAlignment();
-		
+
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLOntology onto1 = manager.loadOntologyFromOntologyDocument(ontoFile1);
 		OWLOntology onto2 = manager.loadOntologyFromOntologyDocument(ontoFile2);
-		
+
 		AlignmentProcess a = new LexicalEquivalenceMatcher(ontoFile1, ontoFile2, weight);
 		a.init(ontoFile1.toURI(), ontoFile2.toURI());
 		Properties params = new Properties();
@@ -164,13 +145,13 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 		lexicalEquivalenceMatcherAlignment = (BasicAlignment) (a.clone());
 
 		lexicalEquivalenceMatcherAlignment.normalise();
-		
+
 		LEMAlignment = lexicalEquivalenceMatcherAlignment.toURIAlignment();
-		
+
 		LEMAlignment.init( onto1.getOntologyID().getOntologyIRI().toURI(), onto2.getOntologyID().getOntologyIRI().toURI(), A5AlgebraRelation.class, BasicConfidence.class );
-		
+
 		return LEMAlignment;
-		
+
 	}
 
 	public void align(Alignment alignment, Properties param) throws AlignmentException {
@@ -186,10 +167,7 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 
 					//basic weight using profile score
 					addAlignCell("LexicalEquivalenceMatcher" + idCounter + "_" + profileScore + "_", sourceObject,targetObject, "=", wordNetMatch(sourceObject,targetObject) * profileScore);  
-					
-					//using sigmoid function to compute confidence
-//					addAlignCell("LexicalEquivalenceMatcher" + idCounter, sourceObject,targetObject, "=", 
-//							Sigmoid.weightedSigmoid(slope, wordNetMatch(sourceObject,targetObject), Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));  
+
 				}
 			}
 
@@ -207,7 +185,7 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 		String targetModifierBasis = null;
 		Set<String> sourceModifierTokens = new HashSet<String>();
 		Set<String> targetModifierTokens = new HashSet<String>();
-		
+
 		double jcSim = 0;
 		double jaccardSim = 0;
 		double finalScore = 0; 
@@ -222,12 +200,12 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 			targetSynonyms = WordNet.getAllSynonymSet(target.toLowerCase());
 
 			if (!sourceSynonyms.isEmpty() && !targetSynonyms.isEmpty()) {
-				
+
 				jaccardSim = Jaccard.jaccardSetSim(sourceSynonyms, targetSynonyms);
 			}
-			
+
 			jcSim = WordNet.computeJiangConrath(source.toLowerCase(), target.toLowerCase());
-			
+
 			finalScore = (jcSim + jaccardSim) / 2;
 
 		}
@@ -265,14 +243,12 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 			//compute the Jaccard similarity for the compound modifier tokens
 			if (!sourceSynonyms.isEmpty() && !targetSynonyms.isEmpty()) {
 				jaccardSim = Jaccard.jaccardSetSim(sourceSynonyms, targetSynonyms);
-				
-				
 
 				if (jcSim > 0.1 && jaccardSim > 0.1) {
-									
-				//give the jcSim more weight than the jaccard
-				finalScore = (jcSim * 0.75) + (jaccardSim * 0.25);
-				
+
+					//give the jcSim more weight than the jaccard
+					finalScore = (jcSim * 0.75) + (jaccardSim * 0.25);
+
 				} else {
 					finalScore = 0;
 				}
@@ -293,11 +269,11 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 		else if (StringUtilities.isCompoundWord(source) && !StringUtilities.isCompoundWord(target)) {
 
 			sourceCompoundHead = StringUtilities.getCompoundHead(source);
-			
+
 			//get the synonyms of the source compound head only
 			sourceSynonyms = WordNet.getAllSynonymSet(sourceCompoundHead.toLowerCase());
 			targetSynonyms = WordNet.getAllSynonymSet(target.toLowerCase());
-			
+
 			sourceModifierBasis = source.replace(sourceCompoundHead, "");
 			sourceModifierTokens = new HashSet<String>(Arrays.asList(sourceModifierBasis.split("(?<=.)(?=\\p{Lu})")));	
 			double localJcSim = 0;
@@ -330,16 +306,31 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 				if (jcSim > 1.0) {
 					jcSim = 1.0;
 				}
-				
+
 				//compute the Jaccard similarity between the source compound head synonyms and target concept synonyms
 				if (!sourceSynonyms.isEmpty() && !targetSynonyms.isEmpty()) {
 					jaccardSim = Jaccard.jaccardSetSim(sourceSynonyms, targetSynonyms);
 				} else {
 					jaccardSim = 0;
 				}
-				
+
 
 				finalScore = (jcSim + jaccardSim) / 2;
+				
+				if (finalScore > 0.3) {
+					System.out.println("In this case source is a compound and target is not a compound: " + source + " - " + target);
+					System.out.println("The Jiang Conrath sim is: " + jcSim);
+					System.out.println("The Jaccard sim is: " + jaccardSim);
+					
+					System.out.println("sourceSynonyms: ");
+					for (String s : sourceSynonyms) {
+						System.out.println(s);
+					}
+					System.out.println("targetSynonyms: ");
+					for (String s : targetSynonyms) {
+						System.out.println(s);
+					}
+				}
 
 			}
 
@@ -349,11 +340,11 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 		//if only the target is a compound
 		else if (StringUtilities.isCompoundWord(target) && !StringUtilities.isCompoundWord(source)) {
 			targetCompoundHead = StringUtilities.getCompoundHead(target);
-			
+
 			//get the synonyms of the target compound head only
 			targetSynonyms = WordNet.getAllSynonymSet(targetCompoundHead.toLowerCase());
 			sourceSynonyms = WordNet.getAllSynonymSet(source.toLowerCase());
-			
+
 			targetModifierBasis = target.replace(targetCompoundHead, "");
 			targetModifierTokens = new HashSet<String>(Arrays.asList(targetModifierBasis.split("(?<=.)(?=\\p{Lu})")));
 			double localJcSim = 0;
@@ -391,9 +382,24 @@ public class LexicalEquivalenceMatcher extends ObjectAlignment implements Alignm
 				} else {
 					jaccardSim = 0;
 				}
-				
+
 
 				finalScore = (jcSim + jaccardSim) / 2;
+				
+				if (finalScore > 0.3) {
+					System.out.println("\nIn this case target is a compound and source is not a compound: " + target + " - " + source);
+					System.out.println("The Jiang Conrath sim is: " + jcSim);
+					System.out.println("The Jaccard sim is: " + jaccardSim);
+					
+					System.out.println("sourceSynonyms: ");
+					for (String s : sourceSynonyms) {
+						System.out.println(s);
+					}
+					System.out.println("targetSynonyms: ");
+					for (String s : targetSynonyms) {
+						System.out.println(s);
+					}
+				}
 
 
 			}

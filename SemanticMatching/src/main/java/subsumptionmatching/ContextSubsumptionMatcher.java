@@ -212,45 +212,29 @@ public class ContextSubsumptionMatcher extends ObjectAlignment implements Alignm
 
 					//if the source concept equals a child of the target concept: source < target 1.0
 					if (targetSubclasses.contains(source)) {
-						
-						//using basic weighting with profile score
+
 						addAlignCell("ContextSubsumptionMatcher" +idCounter + "_" + profileScore + "_", sourceObject, targetObject, "&lt;", 1.0 * profileScore);
 								
-						
-						//using sigmoid function to compute confidence
-//						addAlignCell("ContextSubsumptionMatcher" +idCounter, sourceObject, targetObject, "&lt;", 
-//								Sigmoid.weightedSigmoid(slope, 1.0, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
 					}
 
 					//if the target concept equals a child of the source concept: source > target 1.0
 					else if (sourceSubclasses.contains(target)) {
-						
-						//using basic weighting with profile score
+
 						addAlignCell("ContextSubsumptionMatcher" +idCounter + "_" + profileScore + "_", sourceObject, targetObject, "&gt;", 1.0 * profileScore);
 						
-						//using sigmoid function to compute confidence
-//						addAlignCell("ContextSubsumptionMatcher" +idCounter, sourceObject, targetObject, "&gt;", 
-//								Sigmoid.weightedSigmoid(slope, 1.0, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
 					}
 
 					//if the source concept equals a parent of the target concept: source > target 1.0
 					else if (targetSuperclasses.contains(source)) {
-						//using basic weighting with profile score
+
 						addAlignCell("ContextSubsumptionMatcher" +idCounter + "_" + profileScore + "_", sourceObject, targetObject, "&gt;", 1.0 * profileScore);
-						
-						//using sigmoid function to compute confidence
-//						addAlignCell("ContextSubsumptionMatcher" +idCounter, sourceObject, targetObject, "&gt;", 
-//								Sigmoid.weightedSigmoid(slope, 1.0, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
 					}
 
 					//if the target concept equals a parent of the source concept: source < target 1.0
 					else if (sourceSuperclasses.contains(target)) {
-						//using basic weighting with profile score
+
 						addAlignCell("ContextSubsumptionMatcher" +idCounter + "_" + profileScore + "_", sourceObject, targetObject, "&lt;", 1.0 * profileScore);
 						
-						//using sigmoid function to compute confidence
-//						addAlignCell("ContextSubsumptionMatcher" +idCounter, sourceObject, targetObject, "&lt;", 
-//								Sigmoid.weightedSigmoid(slope, 1.0, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
 					}
 
 

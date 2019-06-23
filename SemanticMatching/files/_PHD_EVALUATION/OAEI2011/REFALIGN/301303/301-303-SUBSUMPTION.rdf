@@ -71,7 +71,7 @@
     <Cell>
       <entity1 rdf:resource='http://oaei.ontologymatching.org/2010/benchmarks/301/onto.rdf#TechReport'/>
       <entity2 rdf:resource='http://www.aifb.uni-karlsruhe.de/ontology#Report'/>
-      <relation>></relation>
+      <relation>&lt;</relation>
       <measure rdf:datatype='http://www.w3.org/2001/XMLSchema#float'>1.0</measure>
     </Cell>
   </map>

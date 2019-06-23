@@ -85,19 +85,18 @@ public class EvalAllMatchersBasicWeight {
 		if (dataset.equalsIgnoreCase("ATMONTO-AIRM")) {
 			ontoFile1 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/ATMOntoCoreMerged.owl");
 			ontoFile2 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/airm-mono.owl");
-			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_trained_ontology_tokens.txt";
+			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_embeddings.txt";
 			referenceAlignment = "./files/_PHD_EVALUATION/"+dataset+"/REFALIGN/ReferenceAlignment-"+dataset+"-" + relationType + ".rdf";
 
 			storePath = "./files/_PHD_EVALUATION/"+dataset+"/ALIGNMENTS/INDIVIDUAL_ALIGNMENTS/"+ relationType + "_" +weight;
 			evalPath = storePath + "/EXCEL";
 
 
-
 		} else if (dataset.equalsIgnoreCase("BIBFRAME-SCHEMAORG")) {
 
 			ontoFile1 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/bibframe.rdf");
 			ontoFile2 = new File("./files/_PHD_EVALUATION/"+dataset+"/ONTOLOGIES/schema-org.owl");
-			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_trained.txt";
+			wiki_vectorFile_normal = "./files/_PHD_EVALUATION/EMBEDDINGS/wikipedia_embeddings.txt";
 			referenceAlignment = "./files/_PHD_EVALUATION/"+dataset+"/REFALIGN/ReferenceAlignment-"+dataset+"-" + relationType + ".rdf";
 
 			storePath = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ALIGNMENTS/INDIVIDUAL_ALIGNMENTS/"+ relationType + "_" +weight;
@@ -248,7 +247,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -431,7 +430,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -605,7 +604,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -811,7 +810,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -981,7 +980,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -1151,7 +1150,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -1273,7 +1272,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -1396,7 +1395,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;
@@ -1519,7 +1518,7 @@ public class EvalAllMatchersBasicWeight {
 
 			String alignmentFileName = null;
 
-			double[] confidences = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+			double[] confidences = {0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 			double precision = 0;
 			double recall = 0;
 			double fMeasure = 0;

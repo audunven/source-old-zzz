@@ -19,7 +19,7 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>edu.stanford.nlp</groupId>
 			<artifactId>stanford-corenlp</artifactId>
 			<version>3.6.0</version>
@@ -29,15 +29,15 @@
 			<artifactId>stanford-corenlp</artifactId>
 			<version>3.6.0</version>
 			<classifier>models</classifier> 
-			will get the dependent model jars
+<!-- 			will get the dependent model jars -->
 		</dependency>
-		Used by Stanford NLP
-		https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+<!-- 		Used by Stanford NLP -->
+<!-- 		https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
 			<version>3.0.2</version>
-		</dependency> -->
+		</dependency>
 		<!-- Required to run JWNL WordNet -->
 		<dependency>
 			<groupId>xml-apis</groupId>

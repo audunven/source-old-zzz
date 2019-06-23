@@ -77,10 +77,10 @@ public class WordEmbeddingMatcher extends ObjectAlignment implements AlignmentPr
 //		String referenceAlignment = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
 //		String vectorFile = "./files//_PHD_EVALUATION/EMBEDDINGS/wikipedia_trained.txt";
 
-		File ontoFile1 = new File("./files/KEOD18/datasets_refined/d1/ontologies/aixm_airportheliport.owl");
-		File ontoFile2 =  new File("./files/KEOD18/datasets_refined/d1/ontologies/aerodromeinfrastructure.owl");
-		String referenceAlignment = "./files/KEOD18/datasets_refined/d1/refalign/ref-align_aixm-airportheliport-airm-aerodromeinfrastructure-Equivalence.rdf";
-		String vectorFile = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_trained_ontology_tokens.txt";
+		File ontoFile1 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
+		File ontoFile2 =  new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
+		String referenceAlignment = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQUIVALENCE.rdf";
+		String vectorFile = "./files/_PHD_EVALUATION/EMBEDDINGS/skybrary_embeddings.txt";
 		
 
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
@@ -114,11 +114,6 @@ public class WordEmbeddingMatcher extends ObjectAlignment implements AlignmentPr
 		System.out.println("Evaluation with threshold 0.1:");
 		WordEmbeddingMatcherAlignment.cut(0.1);
 		Evaluator.evaluateSingleAlignment(WordEmbeddingMatcherAlignment, referenceAlignment);
-		
-		System.out.println("Printing relations at 0.2:");
-		for (Cell c : WordEmbeddingMatcherAlignment) {
-			System.out.println(c.getObject1() + " " + c.getObject2() + " " + c.getRelation().getRelation() + " " + c.getStrength());
-		}
 
 		System.out.println("Evaluation with threshold 0.4:");
 		WordEmbeddingMatcherAlignment.cut(0.4);
@@ -127,6 +122,11 @@ public class WordEmbeddingMatcher extends ObjectAlignment implements AlignmentPr
 		System.out.println("Evaluation with threshold 0.6:");
 		WordEmbeddingMatcherAlignment.cut(0.6);
 		Evaluator.evaluateSingleAlignment(WordEmbeddingMatcherAlignment, referenceAlignment);
+		
+		System.out.println("Printing relations at 0.6:");
+		for (Cell c : WordEmbeddingMatcherAlignment) {
+			System.out.println(c.getObject1() + " " + c.getObject2() + " " + c.getRelation().getRelation() + " " + c.getStrength());
+		}
 
 		System.out.println("Evaluation with threshold 0.9:");
 		WordEmbeddingMatcherAlignment.cut(0.9);
@@ -234,9 +234,6 @@ public class WordEmbeddingMatcher extends ObjectAlignment implements AlignmentPr
 
 							cosineSim = utilities.Cosine.cosineSimilarity(sourceVectors, targetVectors);
 							
-							//calculate the final confidence using a sigmoid function
-//							addAlignCell("WordEmbeddingMatcher" +idCounter, sourceObject, targetObject, "=", 
-//									Sigmoid.weightedSigmoid(slope, cosineSim, Sigmoid.transformProfileWeight(profileScore, rangeMin, rangeMax)));
 							
 							//calculate using the basic profile score sim
 							addAlignCell("WordEmbeddingMatcher" +idCounter + "_" + profileScore + "_", sourceObject, targetObject, "=", cosineSim * profileScore);

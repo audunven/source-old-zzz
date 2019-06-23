@@ -559,6 +559,33 @@ public class AlignmentOperations {
 	}
 	
 	/**
+	 * Extracts all subsumption relations from an alignment file
+	 * @param inputAlignmentFile the input alignment from which subsumption relations will be extracted
+	 * @param output path to which the created subsumption alignment will be stored
+	 * @throws AlignmentException
+	   Jan 5, 2019
+	 * @throws IOException 
+	 */
+	public static URIAlignment extractSubsumptionRelations(URIAlignment inputAlignment) throws AlignmentException, IOException {
+		URIAlignment subsumptionAlignment = new URIAlignment();
+				
+		URI onto1URI = inputAlignment.getOntology1URI();
+		URI onto2URI = inputAlignment.getOntology2URI();
+		
+		//need to initialise the alignment with ontology URIs and the type of relation (e.g. A5AlgebraRelation) otherwise exceptions are thrown
+		subsumptionAlignment.init( onto1URI, onto2URI, A5AlgebraRelation.class, BasicConfidence.class );
+		
+		for (Cell c : inputAlignment) {
+			if (!c.getRelation().getRelation().equals("=")) {
+				subsumptionAlignment.addAlignCell(c.getObject1(), c.getObject2(), c.getRelation().getRelation(), c.getStrength());
+			}
+		}
+		
+		return subsumptionAlignment;
+		
+	}
+	
+	/**
 	 * Extracts all equivalence relations from an alignment file
 	 * @param inputAlignmentFile the input alignment from which equivalence relations will be extracted
 	 * @param output path to which the created equivalence alignment will be stored
@@ -599,6 +626,35 @@ public class AlignmentOperations {
 		writer.flush();
 		writer.close();
 		
+	}
+	
+	/**
+	 * Extracts all equivalence relations from an alignment
+	 * @param inputAlignmentFile the input alignment from which equivalence relations will be extracted
+	 * @param output path to which the created equivalence alignment will be stored
+	 * @throws AlignmentException
+	   Jan 5, 2019
+	 * @throws IOException 
+	 */
+	public static URIAlignment extractEquivalenceRelations(URIAlignment inputAlignment) throws AlignmentException, IOException {
+		
+		URIAlignment equivalenceAlignment = new URIAlignment();
+		
+		URI onto1URI = inputAlignment.getOntology1URI();
+		URI onto2URI = inputAlignment.getOntology2URI();
+		
+		//need to initialise the alignment with ontology URIs and the type of relation (e.g. A5AlgebraRelation) otherwise exceptions are thrown
+		equivalenceAlignment.init( onto1URI, onto2URI, A5AlgebraRelation.class, BasicConfidence.class );
+		
+		for (Cell c : inputAlignment) {
+			if (c.getRelation().getRelation().equals("=") || c.getRelation().equals("=")) {
+				equivalenceAlignment.addAlignCell(c.getObject1(), c.getObject2(), c.getRelation().getRelation(), c.getStrength());
+				System.out.println("Extracting " + c.getObject1() + " " + c.getObject2() + " " +  c.getRelation().getRelation() + " " +  c.getStrength());
+			} 
+		}
+		
+		return equivalenceAlignment;
+	
 	}
 	
 	/**

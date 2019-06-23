@@ -1,7 +1,10 @@
 package matchercombination;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -27,35 +30,16 @@ public class ProfileWeight {
 	
 	public static void main(String[] args) throws AlignmentException, IOException, URISyntaxException {
 		
-		String alignmentFolder = "./files/_PHD_EVALUATION/MATCHERTESTING/ProfileWeightTest/CH_WEIGHT";
+		String alignmentFolder = "./files/_PHD_EVALUATION/MATCHERTESTING/ProfileWeightTest/301302";
 		
-		URIAlignment test = computeProfileWeightingEquivalence(alignmentFolder);
+		URIAlignment test = computeProfileWeightingEquivalence(alignmentFolder);	
 		
-		System.out.println("The alignment contains " + test.nbCells() + " relations");
+		System.out.println("\nThe alignment contains " + test.nbCells() + " relations");
 		
-		
-		ArrayList<URIAlignment> inputAlignments = new ArrayList<URIAlignment>();
-		
-		AlignmentParser parser = new AlignmentParser();
-		
-		File folder = new File(alignmentFolder);
-		File[] filesInDir = folder.listFiles();
-		URIAlignment inputAlignment = new URIAlignment();
-		
-		for (int i = 0; i < filesInDir.length; i++) {
-			
-			parser = new AlignmentParser();
-			inputAlignment = (URIAlignment)parser.parse(filesInDir[i].toURI().toString());
-			inputAlignments.add(inputAlignment);
-			
+		for (Cell c : test) {
+			System.out.println(c.getId() + " " + c.getObject1AsURI().getFragment() + " " + c.getObject2AsURI().getFragment() + " " + c.getStrength());
 		}
 		
-		URIAlignment test2 = computeProfileWeightingEquivalence(inputAlignments);
-		
-		System.out.println("\nThe alignment contains " + test2.nbCells() + " relations");
-		
-		
-			
 	}
 	
 	public static URIAlignment computeProfileWeightingEquivalence(String folderName) throws AlignmentException, IOException, URISyntaxException {
@@ -182,6 +166,11 @@ public class ProfileWeight {
 				}
 			}
 		}
+		
+//		System.out.println("The highestCellsAlignment contains the following relations: " );
+//		for (Cell c : highestCellsAlignment) {
+//			System.out.println(c.getId() + " " + c.getObject1AsURI().getFragment() + " " + c.getObject2AsURI().getFragment() + " " + c.getStrength());
+//		}
 				
 		return highestCellsAlignment;
 		
@@ -234,6 +223,23 @@ public class ProfileWeight {
 				temp++;
 			}
 		}
+		
+		//print matrix
+//				File outputFile = new File("./files/ProfileWeight.txt");
+//				
+//				PrintWriter writer = new PrintWriter(
+//						new BufferedWriter(
+//								new FileWriter(outputFile)), true); 
+//				
+//				for (int i = 0; i < simMatrix.length; i++) {
+//				    for (int j = 0; j < simMatrix[i].length; j++) {
+//				        writer.print(simMatrix[i][j] + ";");
+//				    }
+//				    writer.println();
+//				}
+//				
+//				writer.flush();
+//				writer.close();
 
 		return simMatrix;
 	}
@@ -254,7 +260,7 @@ public class ProfileWeight {
 			double max = 0;
 
 			//each cell in row
-			for (int col = 1; col < matrix[row].length; col++) {
+			for (int col = 0; col < matrix[row].length; col++) {
 				
 				if (matrix[row][col].getConfidence() > max) {
 
@@ -268,6 +274,7 @@ public class ProfileWeight {
 			rowMaxes.add(rel);
 		
 		}
+		
 
 		return rowMaxes;
 	}

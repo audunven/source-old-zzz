@@ -105,13 +105,8 @@ public class GraphEquivalenceMatcher extends ObjectAlignment implements Alignmen
 	//test method
 	public static void main(String[] args) throws OWLOntologyCreationException, AlignmentException, URISyntaxException, IOException {
 
-		File ontoFile1 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/bibframe.rdf");
-		File ontoFile2 = new File("./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/ONTOLOGIES/schema-org.owl");
-		String referenceAlignment = "./files/_PHD_EVALUATION/BIBFRAME-SCHEMAORG/REFALIGN/ReferenceAlignment-BIBFRAME-SCHEMAORG-EQUIVALENCE.rdf";
-
-		//				File ontoFile1 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/ATMOntoCoreMerged.owl");
-		//				File ontoFile2 = new File("./files/_PHD_EVALUATION/ATMONTO-AIRM/ONTOLOGIES/airm-mono.owl");
-		//				String referenceAlignment = "./files/_PHD_EVALUATION/ATMONTO-AIRM/REFALIGN/ReferenceAlignment-ATMONTO-AIRM-EQUIVALENCE.rdf";
+		File ontoFile1 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301303/301303-301.rdf");
+		File ontoFile2 = new File("./files/_PHD_EVALUATION/OAEI2011/ONTOLOGIES/301303/301303-303.rdf");
 
 		//create a new instance of the neo4j database in each run
 		String ontologyParameter1 = null;
@@ -160,41 +155,6 @@ public class GraphEquivalenceMatcher extends ObjectAlignment implements Alignmen
 
 		graphMatcherAlignment.normalise();
 
-		//evaluate the Harmony alignment
-		BasicAlignment harmonyAlignment = HarmonyEquivalence.getHarmonyAlignment(graphMatcherAlignment);
-		System.out.println("The Harmony alignment contains " + harmonyAlignment.nbCells() + " cells");
-		Evaluator.evaluateSingleAlignment(harmonyAlignment, referenceAlignment);
-
-		System.out.println("Printing Harmony Alignment: ");
-		for (Cell c : harmonyAlignment) {
-			System.out.println(c.getObject1() + " " + c.getObject2() + " " + c.getRelation().getRelation() + " " + c.getStrength());
-		}
-
-		System.out.println("\nThe alignment contains " + graphMatcherAlignment.nbCells() + " relations");
-
-		System.out.println("Evaluation with no cut threshold:");
-		Evaluator.evaluateSingleAlignment(graphMatcherAlignment, referenceAlignment);
-
-		System.out.println("Evaluation with threshold 0.2:");
-		graphMatcherAlignment.cut(0.2);
-		Evaluator.evaluateSingleAlignment(graphMatcherAlignment, referenceAlignment);
-
-		System.out.println("Evaluation with threshold 0.4:");
-		graphMatcherAlignment.cut(0.4);
-		Evaluator.evaluateSingleAlignment(graphMatcherAlignment, referenceAlignment);
-
-		System.out.println("Evaluation with threshold 0.6:");
-		graphMatcherAlignment.cut(0.6);
-		Evaluator.evaluateSingleAlignment(graphMatcherAlignment, referenceAlignment);
-
-		System.out.println("Printing relations at 0.6:");
-		for (Cell c : graphMatcherAlignment) {
-			System.out.println(c.getObject1() + " " + c.getObject2() + " " + c.getRelation().getRelation() + " " + c.getStrength());
-		}
-
-		System.out.println("Evaluation with threshold 0.9:");
-		graphMatcherAlignment.cut(0.9);
-		Evaluator.evaluateSingleAlignment(graphMatcherAlignment, referenceAlignment);
 
 	}
 

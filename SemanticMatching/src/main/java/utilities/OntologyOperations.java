@@ -1478,7 +1478,8 @@ public class OntologyOperations {
 				for (OWLAnnotationAssertionAxiom a : onto.getAnnotationAssertionAxioms(cls.getIRI())) {
 					//require that the definition is min 3 words
 					//if (a.getValue().toString().split(" ").length >= 3) {
-					definitions.add(a.getValue().toString().replaceAll("\\^\\^xsd:string", "").replaceAll("[^A-Za-z0-9 ]", ""));
+					//definitions.add(a.getValue().toString().replaceAll("\\^\\^xsd:string", "").replaceAll("[^A-Za-z0-9 ]", "").toLowerCase());
+					definitions.add(a.getValue().toString().replaceAll("\\^\\^xsd:string", "").toLowerCase());
 					//}
 				}
 			}
@@ -1496,7 +1497,8 @@ public class OntologyOperations {
 		for (OWLClass cls : onto.getClassesInSignature()) {
 			if (cls.equals(c)) {
 				for (OWLAnnotationAssertionAxiom a : onto.getAnnotationAssertionAxioms(cls.getIRI())) {
-					sb.append(a.getValue().toString().replaceAll("\\^\\^xsd:string", "").replaceAll("[^A-Za-z0-9 ]", ""));
+//					sb.append(" " + a.getValue().toString().replaceAll("\\^\\^xsd:string", "").replaceAll("[^A-Za-z0-9 ]", "").toLowerCase());
+					sb.append(" " + a.getValue().toString().replaceAll("\\^\\^xsd:string", "").toLowerCase());
 				}
 			}
 		}

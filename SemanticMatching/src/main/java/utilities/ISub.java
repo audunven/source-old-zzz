@@ -189,8 +189,8 @@ public class ISub {
 		
 		ISub i = new ISub();
 		
-		String s1 = "isPublishedIn";
-		String s2 = "published";
+		String s1 = "airspaceroute";
+		String s2 = "airspace";
 		
 		double result = i.score(s1, s2);
 		

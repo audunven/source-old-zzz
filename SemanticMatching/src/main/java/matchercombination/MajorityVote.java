@@ -171,7 +171,7 @@ public class MajorityVote {
 		
 
 		for (Cell c : toKeep) {
-			simpleVoteAlignment.addAlignCell(c.getObject1(), c.getObject2(), StringUtilities.validateRelationType(c.getRelation().getRelation()),
+			simpleVoteAlignment.addAlignCell(c.getId(), c.getObject1(), c.getObject2(), StringUtilities.validateRelationType(c.getRelation().getRelation()),
 					c.getStrength());
 		}
 		
